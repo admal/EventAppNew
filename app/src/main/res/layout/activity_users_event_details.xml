@@ -1,0 +1,128 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.lab.eventapp.UsersEventDetailsActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Title"
+        android:id="@+id/lblEventTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Starts at:"
+        android:id="@+id/lblStartFix"
+        android:padding="10dp"
+        android:layout_below="@+id/lblPlaceFix"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Ends at:"
+        android:id="@+id/lblEndDateFix"
+        android:padding="10dp"
+        android:layout_below="@+id/lblStartFix"
+        android:layout_alignEnd="@+id/lblStartFix" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Creator:"
+        android:id="@+id/lblCreator"
+        android:layout_alignBottom="@+id/lblEventTitle"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Where?"
+        android:id="@+id/lblPlaceFix"
+        android:layout_marginTop="44dp"
+        android:padding="10dp"
+        android:layout_below="@+id/lblEventTitle"
+        android:layout_alignEnd="@+id/lblEndDateFix" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="place"
+        android:id="@+id/lblPlace"
+        android:padding="10dp"
+        android:layout_above="@+id/lblStartFix"
+        android:layout_toStartOf="@+id/lblCreator" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="start"
+        android:id="@+id/lblStart"
+        android:layout_above="@+id/lblEndDateFix"
+        android:layout_alignEnd="@+id/lblPlace"
+        android:padding="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="end"
+        android:id="@+id/lblEnd"
+        android:layout_alignBottom="@+id/lblEndDateFix"
+        android:layout_toStartOf="@+id/lblCreator"
+        android:padding="10dp" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New ToggleButton"
+        android:id="@+id/btnIsGoing"
+        android:textOn="I'm coming!"
+        android:textOff="NAH"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#ff0028"
+        android:textColor="#ffa3a7"
+        android:padding="5dp"
+        android:checked="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="See \n conversation"
+        android:id="@+id/btnSendMsg"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/lblEventTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Description:"
+        android:id="@+id/lblDescFix"
+        android:layout_alignTop="@+id/lblDesc"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="desc"
+        android:id="@+id/lblDesc"
+        android:layout_below="@+id/lblEnd"
+        android:layout_alignStart="@+id/lblStart" />
+
+</RelativeLayout>
