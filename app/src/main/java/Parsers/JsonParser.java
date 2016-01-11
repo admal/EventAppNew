@@ -2,9 +2,13 @@ package Parsers;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,6 +16,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import Data.Repositories.UsersRepository;
+import models.DataEntity;
 import models.Event;
 import models.User;
 
@@ -20,6 +25,23 @@ import models.User;
  */
 public class JsonParser
 {
+    public <T> T parseEntity(String json, Class<T> clazz)
+    {
+        Gson gson = new Gson();
+        T obj = gson.fromJson(json, clazz);
+        Log.d("fromParser", obj.toString());
+        return obj;
+    }
+
+    public <T> ArrayList<T>parseListEntities(String json, Class<T> clazz)
+    {
+        ArrayList<T> list = new ArrayList<>();
+        Gson gson = new Gson();
+        Type collectionType = new TypeToken<ArrayList<T>>(){}.getType(); //dat java -.-
+        list = gson.fromJson(json,collectionType);
+        return list;
+    }
+
     public User parseUser(String json)
     {
         try {

@@ -76,4 +76,15 @@ public class User extends DataEntity //not the final version!
     public String getUsername() {
         return username;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", passwd='" + passwd + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\''+
+                '}';
+    }
 }

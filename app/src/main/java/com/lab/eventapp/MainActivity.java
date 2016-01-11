@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import CustomTasks.SendHttpRequestTask;
 import Parsers.JsonParser;
 import http.DbHandler;
+import models.DataEntity;
 import models.Event;
 import models.User;
 
@@ -116,9 +117,12 @@ public class MainActivity extends AppCompatActivity {
        // String json = " {\"error\":false,\"user\":[{\"id\":2,\"username\":\"test\",\"name\":\"test3\",\"surname\":\"test4\",\"email\":\"aqq2@gmail.com\"}]}";
         JsonParser parser = new JsonParser();
         User user = parser.parseUser(json);
+        //User user = parser.parseEntity(json, User.class);
         Log.d("User", user.getUsername());
         String json2 = "{\"error\":false,\"events\":[{\"id\":5,\"owner\":1,\"conversation\":1,\"title\":\"asda\",\"description\":\"adadad\",\"start\":\"2015-01-12\",\"end\":\"2015-02-23\"},{\"id\":6,\"owner\":1,\"conversation\":1,\"title\":\"sad\",\"description\":\"qwe\",\"start\":\"2015-01-12\",\"end\":\"2015-02-23\"}]}";
         ArrayList<Event> ev = parser.parseEvents(json2);
+        //ArrayList<Event> ev = parser.parseListEntities(json2, Event.class);
+
         if(ev != null) {
             for (Event e :
                     ev) {
