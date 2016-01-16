@@ -59,4 +59,21 @@ public class DbHandler {
         String json = new SendHttpRequestTask().execute(tmp).get();
         return json;
     }
+
+    public static String getEventMessages(int conversation) throws ExecutionException, InterruptedException {
+
+        ArrayList<MethodParameters> tmp = new ArrayList<MethodParameters>();
+
+        MethodParameters head = new MethodParameters();
+        head.name = "http://mbs.home.pl/kreator/Android/v1/messages";
+        head.value = "POST";
+
+        MethodParameters payload = new MethodParameters();
+        payload.name = "conversation";
+        payload.value = Integer.toString(conversation);
+        tmp.add(head);
+        tmp.add(payload);
+        String json = new SendHttpRequestTask().execute(tmp).get();
+        return json;
+    }
 }

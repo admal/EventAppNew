@@ -112,6 +112,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        String jsonMessages = "";
+        try {
+            jsonMessages = DbHandler.getEventMessages(2);
+
+            Log.d("output", jsonMessages);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
        // new SendHttpRequestTask().execute(url, "GET");
        // String json = " {\"error\":false,\"user\":[{\"id\":2,\"username\":\"test\",\"name\":\"test3\",\"surname\":\"test4\",\"email\":\"aqq2@gmail.com\"}]}";
