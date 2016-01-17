@@ -47,11 +47,11 @@ public class DbHandler {
         ArrayList<MethodParameters> tmp = new ArrayList<MethodParameters>();
 
         MethodParameters head = new MethodParameters();
-        head.name = "http://mbs.home.pl/kreator/Android/v1/users";
+        head.name = "http://mbs.home.pl/kreator/Android/v1/user";
         head.value = "POST";
 
         MethodParameters payload = new MethodParameters();
-        payload.name = "users";
+        payload.name = "user";
         payload.value = Integer.toString(user);
 
         tmp.add(head);
