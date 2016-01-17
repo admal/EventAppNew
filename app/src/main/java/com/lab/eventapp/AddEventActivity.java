@@ -16,8 +16,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import Data.Repositories.EventsRepository;
-import Data.Repositories.UsersRepository;
 import models.Event;
 
 public class AddEventActivity extends AppCompatActivity {
@@ -88,9 +86,9 @@ public class AddEventActivity extends AppCompatActivity {
                     TextView desc = (TextView) v.findViewById(R.id.lblDesc);
                     newEvent.setDescription(desc.getText().toString());
                 }
-                newEvent.setOwner(Singleton.getInstance().getCurrentUser());
+                newEvent.setOwnerObject(Singleton.getInstance().getCurrentUser());
 //                EventsRepository repo = new EventsRepository();
-//                repo.addEvent(event);
+//                repo.addEvent(users);
                 finish();
             }
         });

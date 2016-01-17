@@ -20,9 +20,9 @@ public class EventsRepository
     }
 
     /**
-     * Get all events that user has created
-     * @param userId id of the user
-     * @return ArrayList of events; null if user has not any event
+     * Get all events that users has created
+     * @param userId id of the users
+     * @return ArrayList of events; null if users has not any users
      */
     public ArrayList<Event> getUsersEvents(int userId)
     {

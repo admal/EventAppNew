@@ -1,7 +1,6 @@
 package com.lab.eventapp;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,17 +19,14 @@ import com.lab.eventapp.MainEventFragments.EventsFragment;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 import com.lab.eventapp.MainEventFragments.NotyficationsFragment;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-import CustomTasks.SendHttpRequestTask;
-import Parsers.JsonParser;
+import com.lab.eventapp.Parsers.JsonParser;
+import com.lab.eventapp.Parsers.JsonUserResponseObject;
+
 import http.DbHandler;
-import models.DataEntity;
 import models.Event;
 import models.User;
 
@@ -125,13 +121,13 @@ public class MainActivity extends AppCompatActivity {
 
 
        // new SendHttpRequestTask().execute(url, "GET");
-       // String json = " {\"error\":false,\"user\":[{\"id\":2,\"username\":\"test\",\"name\":\"test3\",\"surname\":\"test4\",\"email\":\"aqq2@gmail.com\"}]}";
+        String jsonStatic = " {\"error\":false,\"users\":[{\"id\":2,\"username\":\"test\",\"name\":\"test3\",\"surname\":\"test4\",\"email\":\"aqq2@gmail.com\"}]}";
         JsonParser parser = new JsonParser();
-        User user = parser.parseUser(json);
-        //User user = parser.parseEntity(json, User.class);
+        User user = parser.parseUsers(jsonStatic)[0];
+        //User users = parser.parseUser(json, User.class);
         Log.d("User", user.getUsername());
         String json2 = "{\"error\":false,\"events\":[{\"id\":5,\"owner\":1,\"conversation\":1,\"title\":\"asda\",\"description\":\"adadad\",\"start\":\"2015-01-12\",\"end\":\"2015-02-23\"},{\"id\":6,\"owner\":1,\"conversation\":1,\"title\":\"sad\",\"description\":\"qwe\",\"start\":\"2015-01-12\",\"end\":\"2015-02-23\"}]}";
-        ArrayList<Event> ev = parser.parseEvents(json2);
+        ArrayList<Event> ev = new ArrayList<>(Arrays.asList(parser.parseEvents(json2)));
         //ArrayList<Event> ev = parser.parseListEntities(json2, Event.class);
 
         if(ev != null) {

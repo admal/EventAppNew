@@ -5,7 +5,7 @@ package models;
  */
 public class DataEntity
 {
-    protected int id;
+    public int id;
 
     public DataEntity(int id) {
         this.id = id;

@@ -7,30 +7,30 @@ package models;
 import java.util.ArrayList;
 
 /**
- * Class representing user in app
+ * Class representing users in app
  */
 public class User extends DataEntity //not the final version!
 {
-    private String username;
-    private String passwd;
-    private String name;
-    private String surname;
-    private String email;
+    public String username;
+    public  String passwd;
+    public String name;
+    public String surname;
+    public String email;
 
     /**
-     * Friends of a user
+     * Friends of a users
      */
     private ArrayList<User> Friends;
     /**
-     * Messages sent by user
+     * Messages sent by users
      */
     private ArrayList<Message> Messages;
     /**
-     * Events that user was invited
+     * Events that users was invited
      */
-    public ArrayList<UsersEvents> usersEvents; //user's events (that was invited to)
+    public ArrayList<UsersEvents> usersEvents; //users's events (that was invited to)
     /**
-     * Events created by a user
+     * Events created by a users
      */
     public ArrayList<Event> createdEvents;
 
@@ -62,6 +62,10 @@ public class User extends DataEntity //not the final version!
         Messages = messages;
     }
 
+    public User()
+    {
+        super();
+    }
     public User(int id) {
 
         super(id);

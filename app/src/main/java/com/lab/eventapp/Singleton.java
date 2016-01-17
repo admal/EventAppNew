@@ -1,14 +1,13 @@
 package com.lab.eventapp;
 
-import android.util.Log;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import Data.Repositories.EventsRepository;
 import Data.Repositories.UsersEventsRepository;
-import Parsers.JsonParser;
+import com.lab.eventapp.Parsers.JsonParser;
 import http.DbHandler;
 import models.Event;
 import models.User;
@@ -27,13 +26,11 @@ public class Singleton
     private UsersEventsRepository usersEventRepo;
     private EventsRepository eventRepo;
 
-
-
     protected Singleton()
     {
         // Exists only to defeat instantiation.
 
-        //get logged user
+        //get logged users
         String jsonUser = "";
         try {
             jsonUser = DbHandler.getUserData(2);
@@ -43,7 +40,7 @@ public class Singleton
             e.printStackTrace();
         }
         JsonParser parser = new JsonParser();
-        CurrentUser = parser.parseUser(jsonUser);
+        CurrentUser = parser.parseUsers(jsonUser)[0];
         //get his events
         String jsonEvents = "";
         try {
@@ -55,7 +52,7 @@ public class Singleton
         }
         CurrentUser.usersEvents = new ArrayList<>();
         CurrentUser.createdEvents = new ArrayList<>();
-        CurrentUser.createdEvents = parser.parseEvents(jsonEvents);
+        CurrentUser.createdEvents = new ArrayList<>(Arrays.asList(parser.parseEvents(jsonEvents)));
 
 
 
@@ -73,14 +70,14 @@ public class Singleton
         tmpEvents.add(new Event(5,"Users1 Event 1", CurrentUser, new Date()));
         tmpEvents.add(new Event(6,"Users1 Event 2", CurrentUser, new Date()));
 
-        //put into user events that he is invited to
+        //put into users events that he is invited to
         CurrentUser.usersEvents.add(new UsersEvents(CurrentUser,tmpEvents.get(0)));
-        CurrentUser.usersEvents.get(0).event.setDescription("Description \n of the best \n event!!!!");
+        CurrentUser.usersEvents.get(0).event.setDescription("Description \n of the best \n users!!!!");
         CurrentUser.usersEvents.get(0).isGoing = true;
         CurrentUser.usersEvents.add(new UsersEvents(CurrentUser,tmpEvents.get(1)));
         CurrentUser.usersEvents.add(new UsersEvents(CurrentUser,tmpEvents.get(2)));
         CurrentUser.usersEvents.add(new UsersEvents(CurrentUser,tmpEvents.get(3)));
-        //put into user events that he has created
+        //put into users events that he has created
 //        CurrentUser.createdEvents = new ArrayList<>();
 //        CurrentUser.createdEvents.add(tmpEvents.get(4));
 //        CurrentUser.createdEvents.add(tmpEvents.get(5));
