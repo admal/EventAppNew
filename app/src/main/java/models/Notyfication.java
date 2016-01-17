@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class Notyfication extends DataEntity //not the final version!
 {
-    private String type; //will be edited into enum probably (types: msg, new event)
+    private String type; //will be edited into enum probably (types: msg, new users)
     private Date cameAt;
     private Date readAt;
     private String msg;

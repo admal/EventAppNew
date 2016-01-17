@@ -19,9 +19,9 @@ public class UsersEventsRepository
     }
 
     /**
-     * Get all events that user was invited to.
-     * @param userId id of the user
-     * @return ArrayList of events that user was invited to; if there are no such events returns null
+     * Get all events that users was invited to.
+     * @param userId id of the users
+     * @return ArrayList of events that users was invited to; if there are no such events returns null
      */
     public ArrayList<UsersEvents> getAllUsersEvents(int userId) //TODO: Load data from database and put into arraylist
     {
@@ -35,9 +35,9 @@ public class UsersEventsRepository
     }
 
     /**
-     * Get event by event id
-     * @param id id of event
-     * @return event; if there is no event with such id then return null
+     * Get users by users id
+     * @param id id of users
+     * @return users; if there is no users with such id then return null
      */
     public UsersEvents getEventById(final int id)
     {

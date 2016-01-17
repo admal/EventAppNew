@@ -9,22 +9,24 @@ import java.util.Date;
 public class Event extends DataEntity
 {
     private String title;
-    private User owner;
+    private User ownerObject;
+    private int owner;
     private ArrayList<UsersEvents> participants;
     private Date start;
     private Date end;
     private String description;
     private String place;
+    private int conservation;
 
     public Event()
     {
         super();
     }
-    public Event(int id, String tit, User owner, Date start)
+    public Event(int id, String tit, User ownerObject, Date start)
     {
         super(id);
         title = tit;
-        this.owner = owner;
+        this.ownerObject = ownerObject;
         this.start = start;
     }
 
@@ -42,7 +44,7 @@ public class Event extends DataEntity
 
     public int getOwnerId()
     {
-        return owner.id;
+        return ownerObject.id;
     }
 
     public Date getStartDate() {
@@ -77,8 +79,8 @@ public class Event extends DataEntity
         this.participants = participants;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setOwnerObject(User ownerObject) {
+        this.ownerObject = ownerObject;
     }
 
     public void setTitle(String title) {

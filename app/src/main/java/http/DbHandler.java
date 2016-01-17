@@ -17,7 +17,7 @@ public class DbHandler {
         head.value = "POST";
 
         MethodParameters payload = new MethodParameters();
-        payload.name = "user";
+        payload.name = "users";
         payload.value = Integer.toString(user);
 
         tmp.add(head);
@@ -34,7 +34,7 @@ public class DbHandler {
         head.value = "POST";
 
         MethodParameters payload = new MethodParameters();
-        payload.name = "user";
+        payload.name = "users";
         payload.value = Integer.toString(owner);
 
         tmp.add(head);
@@ -47,11 +47,11 @@ public class DbHandler {
         ArrayList<MethodParameters> tmp = new ArrayList<MethodParameters>();
 
         MethodParameters head = new MethodParameters();
-        head.name = "http://mbs.home.pl/kreator/Android/v1/user";
+        head.name = "http://mbs.home.pl/kreator/Android/v1/users";
         head.value = "POST";
 
         MethodParameters payload = new MethodParameters();
-        payload.name = "user";
+        payload.name = "users";
         payload.value = Integer.toString(user);
 
         tmp.add(head);

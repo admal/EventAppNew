@@ -18,7 +18,7 @@ public class MyOnCheckedChangeListener implements CompoundButton.OnCheckedChange
         event.isGoing = !event.isGoing;
 //        for (UsersEvents e :
 //                Singleton.getInstance().getCurrentUser().usersEvents) {
-//            Log.d("isGoing:", e.event.getTitle() + e.isGoing);
+//            Log.d("isGoing:", e.users.getTitle() + e.isGoing);
 //        }
     }
 }
