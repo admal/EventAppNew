@@ -12,6 +12,11 @@ public class DispatchActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+//        if (getIntent().getBooleanExtra("EXIT", false)) {
+//            finish();
+//        }
+
         // Check if there is current user info
         if (ParseUser.getCurrentUser() != null) {
             // Start an intent for the logged in activity

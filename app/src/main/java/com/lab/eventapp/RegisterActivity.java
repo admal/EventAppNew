@@ -25,9 +25,9 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         // Set up the login form.
-        tbUsername = (EditText) findViewById(R.id.tbUsername);
+        tbUsername = (EditText) findViewById(R.id.tbLogin);
         tbEmail = (EditText) findViewById(R.id.tbEmail);
-        tbPasswd = (EditText) findViewById(R.id.tbPasswd);
+        tbPasswd = (EditText) findViewById(R.id.tbPassword);
         tbRepeatPasswd = (EditText) findViewById(R.id.tbRepeatPasswd);
         lblErrors = (TextView)findViewById(R.id.lblErrors);
     }
