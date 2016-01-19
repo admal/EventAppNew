@@ -34,7 +34,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lab.eventapp.MainActivity" />
         </activity>
+        <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="bkcjlKyEkb1ePXQAEhXUCbATiIZkEFZOpuG8ttL4" />
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="LfRUXomXlS9PIu5DHT9FArhvgP9agNGFkU2esvJV" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

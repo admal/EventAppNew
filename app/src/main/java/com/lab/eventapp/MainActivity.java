@@ -25,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 
 import com.lab.eventapp.Parsers.JsonParser;
 import com.lab.eventapp.Parsers.JsonUserResponseObject;
+import com.parse.Parse;
+import com.parse.ParseObject;
 
 import http.DbHandler;
 import models.Event;
@@ -82,6 +84,15 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
+
+        Parse.enableLocalDatastore(this);
+
+        Parse.initialize(this);
+
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
