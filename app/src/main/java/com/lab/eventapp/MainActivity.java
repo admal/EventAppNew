@@ -86,13 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Parse.enableLocalDatastore(this);
+//        Parse.enableLocalDatastore(this);
+//
+//        Parse.initialize(this);
 
-        Parse.initialize(this);
 
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
