@@ -47,17 +47,17 @@ public class LoginActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private TextView tbUsername;
+    private TextView tbPasswd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        tbUsername = (TextView) findViewById(R.id.tbUserName);
+        tbPasswd = (TextView) findViewById(R.id.tbPasswd);
 
     }
 
