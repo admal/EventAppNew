@@ -6,14 +6,14 @@ package models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 
 /**
  * Class representing users in app
  */
-//@ParseClassName("user")
-//public class User extends ParseObject
+//public class User extends ParseUser
 //{
 //    public User() {}
 //

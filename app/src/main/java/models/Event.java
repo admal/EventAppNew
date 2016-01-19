@@ -92,6 +92,7 @@ public class Event extends DataEntity
     public int getOwnerId()
     {
         return ownerObject.id;
+        //return 1;
     }
 
     public Date getStartDate() {

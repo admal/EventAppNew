@@ -19,23 +19,16 @@ import com.lab.eventapp.MainEventFragments.EventsFragment;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 import com.lab.eventapp.MainEventFragments.NotyficationsFragment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-
-import com.lab.eventapp.Parsers.JsonParser;
-import com.lab.eventapp.Parsers.JsonUserResponseObject;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import http.DbHandler;
-import models.Event;
-import models.TmpUser;
-import models.User;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import models.ParseEvent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -101,21 +94,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        String currUserId = ParseUser.getCurrentUser().getObjectId();
-        Log.d("user", currUserId);
-        ParseQuery<TmpUser> query = ParseQuery.getQuery("User");
 
-        final TmpUser currUser = new TmpUser();
-        query.getInBackground(currUserId, new GetCallback<TmpUser>() {
+        //TEMPORARY SECTION (just template for further coding)
+        ParseUser currUser = ParseUser.getCurrentUser();
+        Log.d("parse", "Inherited: " + currUser.getUsername() + "Email: " + currUser.getEmail());
+
+        ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
+        q.getInBackground("8o6TsyjT47", new GetCallback<ParseEvent>() {
             @Override
-            public void done(TmpUser object, ParseException e) {
-                currUser.setUsername(object.getUsername());
+            public void done(ParseEvent object, ParseException e) {
+                if (e == null) {
+                    try {
+                        ParseObject user = object.getOwner();
+                        Log.d("parse","Event title: " + object.getTitle());
+                        Log.d("parse", "owner: " + user.getString("username"));
+                    } catch (ParseException e1) {
+                        Log.d("parse",e.getMessage());
+                    }
+                }
+                else
+                    Log.d("parse", "again nothing :/");
+
             }
         });
-
-
-        Log.d("user", "Username: " + currUser.getUsername() + "; Email: " + currUser.getEmail());
-
+//
+//        ParseObject event = new ParseObject("Event");
+//        event.put("title", "From android");
+//        event.put("endDate", new Date());
+//        event.put("startDate", new Date());
+//        event.put("owner", currUser);
+//        try {
+//            event.save();
+//        } catch (ParseException e) {
+//            Log.d("parse",e.getMessage());
+//        }
+        //END
     }
 
 
