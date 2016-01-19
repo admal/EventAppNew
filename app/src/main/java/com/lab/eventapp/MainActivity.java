@@ -25,11 +25,16 @@ import java.util.concurrent.ExecutionException;
 
 import com.lab.eventapp.Parsers.JsonParser;
 import com.lab.eventapp.Parsers.JsonUserResponseObject;
+import com.parse.GetCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import http.DbHandler;
 import models.Event;
+import models.TmpUser;
 import models.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,14 +89,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
-
-//        Parse.enableLocalDatastore(this);
-//
-//        Parse.initialize(this);
-
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,49 +101,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //tmp staff
+        String currUserId = ParseUser.getCurrentUser().getObjectId();
+        Log.d("user", currUserId);
+        ParseQuery<TmpUser> query = ParseQuery.getQuery("User");
 
-        String json = "";
-        try {
-            json = DbHandler.getUserData(2);
-
-            Log.d("output", json);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        String jsonMessages = "";
-        try {
-            jsonMessages = DbHandler.getEventMessages(2);
-
-            Log.d("output", jsonMessages);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-       // new SendHttpRequestTask().execute(url, "GET");
-        String jsonStatic = " {\"error\":false,\"users\":[{\"id\":2,\"username\":\"test\",\"name\":\"test3\",\"surname\":\"test4\",\"email\":\"aqq2@gmail.com\"}]}";
-        JsonParser parser = new JsonParser();
-        User user = parser.parseUsers(jsonStatic)[0];
-        //User users = parser.parseUser(json, User.class);
-        Log.d("User", user.getUsername());
-        String json2 = "{\"error\":false,\"events\":[{\"id\":5,\"owner\":1,\"conversation\":1,\"title\":\"asda\",\"description\":\"adadad\",\"start\":\"2015-01-12\",\"end\":\"2015-02-23\"},{\"id\":6,\"owner\":1,\"conversation\":1,\"title\":\"sad\",\"description\":\"qwe\",\"start\":\"2015-01-12\",\"end\":\"2015-02-23\"}]}";
-        ArrayList<Event> ev = new ArrayList<>(Arrays.asList(parser.parseEvents(json2)));
-        //ArrayList<Event> ev = parser.parseListEntities(json2, Event.class);
-
-        if(ev != null) {
-            for (Event e :
-                    ev) {
-                Log.d("events:", e.getTitle());
+        final TmpUser currUser = new TmpUser();
+        query.getInBackground(currUserId, new GetCallback<TmpUser>() {
+            @Override
+            public void done(TmpUser object, ParseException e) {
+                currUser.setUsername(object.getUsername());
             }
-        }
-        Log.e("json-error", "Error null eventlist");
-        ///
+        });
+
+
+        Log.d("user", "Username: " + currUser.getUsername() + "; Email: " + currUser.getEmail());
 
     }
 

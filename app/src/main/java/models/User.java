@@ -4,11 +4,31 @@ package models;
  * Created by adam on 23.11.15.
  */
 
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+
 import java.util.ArrayList;
 
 /**
  * Class representing users in app
  */
+//@ParseClassName("user")
+//public class User extends ParseObject
+//{
+//    public User() {}
+//
+//    //GETTERS
+//    public String getUsername(){
+//        return getString("username");
+//    }
+//    public String getEmail()
+//    {
+//        return getString("email");
+//    }
+//
+//
+//}
+
 public class User extends DataEntity //not the final version!
 {
     public String username;

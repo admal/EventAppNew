@@ -1,11 +1,58 @@
 package models;
 
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by Adam on 2015-11-23.
  */
+//@ParseClassName("event")
+//public class Event extends ParseObject
+//{
+//    public Event(){}
+//    //GETTERS
+//    public String getTitle()
+//    {
+//        return getString("title");
+//    }
+//    public Date getStartDate()
+//    {
+//        return getDate("startDate");
+//    }
+//    public Date getEndDate()
+//    {
+//        return getDate("endDate");
+//    }
+//    public String getDescription()
+//    {
+//        return getString("description");
+//    }
+//    public User getOwner()
+//    {
+//        //TODO: get the owner from db and return it
+//        return null;
+//    }
+//    //SETTERS
+//    public void setTitle(String title)
+//    {
+//        put("description",title);
+//    }
+//    public void setStartDate(Date date)
+//    {
+//        put("startDate",date);
+//    }
+//    public void setEndDate(Date date)
+//    {
+//        put("endDate",date);
+//    }
+//    public void setOwner(int userId)
+//    {
+//        put("owner_id",userId);
+//    }
+//}
 public class Event extends DataEntity
 {
     private String title;

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import models.TmpUser;
+import models.User;
 import com.parse.ParseObject;
 
 /**
@@ -16,6 +18,9 @@ public class Parse extends android.app.Application {
         super.onCreate();
 
         com.parse.Parse.enableLocalDatastore(this);
+
+        ParseObject.registerSubclass(TmpUser.class);
+
         com.parse.Parse.initialize(this);
 
         //TODO: Remove
