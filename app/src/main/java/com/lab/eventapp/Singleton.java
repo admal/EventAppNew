@@ -31,28 +31,32 @@ public class Singleton
         // Exists only to defeat instantiation.
 
         //get logged users
-        String jsonUser = "";
-        try {
-            jsonUser = DbHandler.getUserData(2);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        JsonParser parser = new JsonParser();
-        CurrentUser = parser.parseUsers(jsonUser)[0];
-        //get his events
-        String jsonEvents = "";
-        try {
-            jsonEvents = DbHandler.getEventsOwner(CurrentUser.getId());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        String jsonUser = "";
+//        try {
+//            jsonUser = DbHandler.getUserData(2);
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        JsonParser parser = new JsonParser();
+//        CurrentUser = parser.parseUsers(jsonUser)[0];
+//        //get his events
+//        String jsonEvents = "";
+//        try {
+//            jsonEvents = DbHandler.getEventsOwner(CurrentUser.getId());
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        CurrentUser = new User();
+        CurrentUser.username = "Adam";
+        CurrentUser.id = 1;
+        CurrentUser.email = "aaa";
         CurrentUser.usersEvents = new ArrayList<>();
         CurrentUser.createdEvents = new ArrayList<>();
-        CurrentUser.createdEvents = new ArrayList<>(Arrays.asList(parser.parseEvents(jsonEvents)));
+        //CurrentUser.createdEvents = new ArrayList<>(Arrays.asList(parser.parseEvents(jsonEvents)));
 
 
 
