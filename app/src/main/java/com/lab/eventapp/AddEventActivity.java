@@ -1,8 +1,12 @@
 package com.lab.eventapp;
 
+
+import android.app.ProgressDialog;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,12 +15,16 @@ import android.widget.TextView;
 import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.Dialogs.ClockTimePickerDialog;
 import com.lab.eventapp.Dialogs.DatePickerDialog;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import models.Event;
+import models.AppUser;
+import models.ParseEvent;
 
 public class AddEventActivity extends AppCompatActivity {
 
@@ -24,17 +32,42 @@ public class AddEventActivity extends AppCompatActivity {
     Date startDate;
     Date endDate;
 
-    private Event event = new Event();
+    private ParseEvent event;
+
+
+    private  TextView tbStartDate ;
+    private  TextView tbEndDate;
+    private  TextView tbStartTime ;
+    private  TextView btAddFriends;
+    private  TextView tbnSaveEvent;
+    private  TextView tbTitle ;
+    private  TextView tbPlace;
+    private TextView tbEndTime;
+    private TextView tbDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        final TextView startDateTb = (TextView) findViewById(R.id.tbDateStart);
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        startDateTb.setText(df.format(new Date()));
-        startDateTb.setOnClickListener(new View.OnClickListener() {
+        endDate = new Date();
+        startDate = new Date();
+
+        tbStartDate = (TextView) findViewById(R.id.tbDateStart);
+        tbEndDate = (TextView)findViewById(R.id.tbDateEnd);
+        tbStartTime = (TextView) findViewById(R.id.tbTimeStart);
+        btAddFriends = (TextView) findViewById(R.id.btnFriends);
+        tbnSaveEvent = (TextView)findViewById(R.id.btnSave);
+        tbTitle = (TextView)findViewById(R.id.lblEventTitle);
+        tbPlace = (TextView)findViewById(R.id.tbPlace);
+        tbEndTime = (TextView)findViewById(R.id.tbTimeEnd);
+        tbDesc =  (TextView)findViewById(R.id.tbDesc);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat timeFormat = new SimpleDateFormat("hh:mm");
+
+        tbStartDate.setText(dateFormat.format(startDate));
+        tbStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog dc = new DatePickerDialog(true);
@@ -42,8 +75,8 @@ public class AddEventActivity extends AppCompatActivity {
             }
         });
 
-        TextView endDateTb = (TextView)findViewById(R.id.tbDateEnd);
-        endDateTb.setOnClickListener(new View.OnClickListener() {
+        tbEndDate.setText(dateFormat.format(endDate));
+        tbEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog dc = new DatePickerDialog(false);
@@ -52,43 +85,100 @@ public class AddEventActivity extends AppCompatActivity {
 
         });
 
-
-        TextView startTime = (TextView) findViewById(R.id.tbTimeStart);
-        startTime.setOnClickListener(new View.OnClickListener() {
+        tbStartTime.setText(timeFormat.format(startDate));
+        tbStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClockTimePickerDialog tp = new ClockTimePickerDialog();
-                tp.show(fm,"ClockPicker");
+                tp.show(fm, "ClockPicker");
             }
         });
 
-        TextView addFriends = (TextView) findViewById(R.id.btnFriends);
-        addFriends.setOnClickListener(new View.OnClickListener() {
+        tbEndTime.setText(timeFormat.format(endDate));
+        //TODO: add listener
+
+        tbStartTime.setText(timeFormat.format(endDate));
+        btAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ChooseFriendsDialog fd = new ChooseFriendsDialog();
 
-                fd.show(fm,"FriendsPicker");
+                fd.show(fm, "FriendsPicker");
             }
         });
+    }
 
-        TextView saveEvent = (TextView)findViewById(R.id.btnSave);
-        saveEvent.setOnClickListener(new View.OnClickListener() {
+    public boolean ValidateForm()
+    {
+        String errorMsg = "";
+
+        errorMsg += isEmpty("Title", tbTitle.getText().toString());
+        errorMsg += isEmpty("Place", tbPlace.getText().toString());
+        errorMsg += isEmpty("Start date", tbStartDate.getText().toString());
+        errorMsg += isEmpty("End date", tbEndDate.getText().toString());
+        errorMsg += isEmpty("Start time", tbStartTime.getText().toString());
+        errorMsg += isEmpty("End time", tbEndTime.getText().toString());
+
+        if(endDate.before(startDate))
+            errorMsg += "End date can not be before start date!\n";
+
+        if(errorMsg.length() == 0)
+            return true;
+        else
+        {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(errorMsg);
+            dialog.setTitle("Error!");
+            dialog.setPositiveButton("OK", null);
+            dialog.setCancelable(true);
+            dialog.create().show();
+            return  false;
+        }
+    }
+    /**
+     * Checks whether given input is empty and returns error message as string.
+     * @param inputName Name of controlled text box
+     * @param input input to check
+     * @return proper error message
+     */
+    private String isEmpty(String inputName,String input)
+    {
+        if(input.length() == 0)
+            return inputName + " can not be empty!\n";
+        return "";
+    }
+
+    public void SaveEvent(View view)
+    {
+        if(!ValidateForm())//there were errors
+        {
+            Log.d("newevent", "Errors found");
+            return;
+        }
+
+        final ParseEvent newEvent = new ParseEvent();
+        newEvent.setStartDate(startDate);
+        newEvent.setStartDate(endDate);
+        newEvent.setTitle(tbTitle.getText().toString());
+        newEvent.setDescription(tbDesc.getText().toString());
+        newEvent.setPlace(tbPlace.getText().toString());
+        newEvent.setOwner(ParseUser.getCurrentUser());
+
+        final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
+        dlg.setTitle("Please wait.");
+        dlg.setMessage("Creating event.  Please wait.");
+        dlg.show();
+
+        newEvent.saveInBackground(new SaveCallback() {
             @Override
-            public void onClick(View v) {
-                Event newEvent = new Event(33); //tmp
-
-                newEvent.setStart(startDate);
-                newEvent.setStart(endDate);
-                TextView title = (TextView)v.findViewById(R.id.lblEventTitle);
-                if(title != null) {
-                    newEvent.setTitle(title.getText().toString());
-                    TextView desc = (TextView) v.findViewById(R.id.lblDesc);
-                    newEvent.setDescription(desc.getText().toString());
+            public void done(ParseException e) {
+                AppUser user = new AppUser(ParseUser.getCurrentUser());
+                try {
+                    user.AddEvent(newEvent);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
                 }
-                newEvent.setOwnerObject(Singleton.getInstance().getCurrentUser());
-//                EventsRepository repo = new EventsRepository();
-//                repo.addEvent(users);
+                dlg.dismiss();
                 finish();
             }
         });

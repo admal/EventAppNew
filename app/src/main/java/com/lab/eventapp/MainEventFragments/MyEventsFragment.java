@@ -12,10 +12,15 @@ import android.widget.TextView;
 import com.lab.eventapp.ListAdapters.MyEventsListAdapter;
 import com.lab.eventapp.R;
 import com.lab.eventapp.Singleton;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import models.AppUser;
 import models.Event;
+import models.ParseEvent;
 
 
 /**
@@ -61,9 +66,15 @@ public class MyEventsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_my_events, container, false);
 
         eventList = (ListView)v.findViewById(R.id.listEvents);
-//        ArrayList<Event> events
-//                = Singleton.getInstance().getEventRepo().getUsersEvents(Singleton.getInstance().getCurrentUser().getId());
-        ArrayList<Event> events = Singleton.getInstance().getCurrentUser().createdEvents;
+
+        //ArrayList<Event> events = Singleton.getInstance().getCurrentUser().createdEvents;
+        AppUser user = new AppUser(ParseUser.getCurrentUser());
+        List<ParseEvent> events = null;
+        try {
+            events = user.getCreatedEvents();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if(events == null) {
             TextView noEventsTextBox = new TextView(getContext());
             noEventsTextBox.setText( "You have not any upcoming events! Add friends to keep in touch with them. ;)");

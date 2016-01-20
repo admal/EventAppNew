@@ -10,6 +10,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.lab.eventapp.CustomEventListeners.MyOnCheckedChangeListener;
+import com.lab.eventapp.Parse;
 import com.lab.eventapp.R;
 import com.lab.eventapp.UsersEventDetailsActivity;
 
@@ -17,18 +18,20 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import models.ParseEvent;
 import models.UsersEvents;
 
 /**
  * Created by Adam on 2015-11-24.
  */
-public class UsersEventsListAdapter extends ArrayAdapter<UsersEvents>
+public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
 {
     private final Context context;
-    private final ArrayList<UsersEvents> events;
+    private final List<ParseEvent> events;
 
-    public UsersEventsListAdapter(Context context, ArrayList<UsersEvents> events) {
+    public UsersEventsListAdapter(Context context, List<ParseEvent> events) {
         super(context, R.layout.list_adapter_usersevents, events);
         this.context = context;
         this.events = events;
@@ -39,7 +42,7 @@ public class UsersEventsListAdapter extends ArrayAdapter<UsersEvents>
     {
         int idx= position; //index in the table of events
         View v = convertView;
-        UsersEvents event = events.get(idx);
+        final ParseEvent event = events.get(idx);
 
         if (v == null)
         {
@@ -55,14 +58,14 @@ public class UsersEventsListAdapter extends ArrayAdapter<UsersEvents>
             TextView dateTb = (TextView) v.findViewById(R.id.lblDate);
             if(titleTb != null && isGoingSwitch != null && dateTb != null)
             {
-                titleTb.setText(event.event.getTitle());
+                titleTb.setText(event.getTitle());
 
-                Date d = event.event.getStartDate();
+                Date d = event.getStartDate();
                 DateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                 dateTb.setText(f.format(d));
 
-                isGoingSwitch.setChecked(event.isGoing);
-                isGoingSwitch.setTag(event.event.getId());
+                isGoingSwitch.setChecked(false);
+                isGoingSwitch.setTag(event.getObjectId());
                 isGoingSwitch.setOnCheckedChangeListener(new MyOnCheckedChangeListener());
             }
         }
@@ -70,7 +73,7 @@ public class UsersEventsListAdapter extends ArrayAdapter<UsersEvents>
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), UsersEventDetailsActivity.class);
-                intent.putExtra("eventid",position);
+                intent.putExtra("eventid",event.getObjectId());
                 context.startActivity(intent);
             }
         });

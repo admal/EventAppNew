@@ -62,8 +62,8 @@
         android:text="place"
         android:id="@+id/lblPlace"
         android:padding="10dp"
-        android:layout_above="@+id/lblStartFix"
-        android:layout_toStartOf="@+id/lblCreator" />
+        android:layout_above="@+id/lblStart"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,9 +81,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="end"
         android:id="@+id/lblEnd"
-        android:layout_alignBottom="@+id/lblEndDateFix"
-        android:layout_toStartOf="@+id/lblCreator"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:layout_below="@+id/lblStart"
+        android:layout_alignParentEnd="true" />
 
     <ToggleButton
         android:layout_width="wrap_content"

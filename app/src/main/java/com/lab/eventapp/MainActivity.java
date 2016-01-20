@@ -23,10 +23,15 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import models.ParseEvent;
 
@@ -96,30 +101,39 @@ public class MainActivity extends AppCompatActivity {
 
 
         //TEMPORARY SECTION (just template for further coding)
-        ParseUser currUser = ParseUser.getCurrentUser();
-        Log.d("parse", "Inherited: " + currUser.getUsername() + "Email: " + currUser.getEmail());
+        final ParseUser currUser = ParseUser.getCurrentUser();
+        Log.d("parse", "Inherited: " + currUser.getUsername() + "; Email: " + currUser.getEmail());
 
         ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
+
         q.getInBackground("8o6TsyjT47", new GetCallback<ParseEvent>() {
             @Override
             public void done(ParseEvent object, ParseException e) {
                 if (e == null) {
                     try {
+                        object.addUserToEvent(currUser);
                         ParseObject user = object.getOwner();
-                        Log.d("parse","Event title: " + object.getTitle());
+
+                        List<ParseUser> eventUsers = object.getUsers();
+                        for (ParseUser u :
+                                eventUsers) {
+                            Log.d("parse", "user in event: " + u.getUsername());
+                        }
+                        Log.d("parse", "Event title: " + object.getTitle());
                         Log.d("parse", "owner: " + user.getString("username"));
                     } catch (ParseException e1) {
-                        Log.d("parse",e.getMessage());
+                        Log.d("parse", e1.getMessage());
                     }
-                }
-                else
+                } else
                     Log.d("parse", "again nothing :/");
 
             }
         });
 //
-//        ParseObject event = new ParseObject("Event");
-//        event.put("title", "From android");
+//        ParseEvent event = new ParseEvent();
+//
+//        event.put("users",currUser);
+//        event.put("title", "From android with users");
 //        event.put("endDate", new Date());
 //        event.put("startDate", new Date());
 //        event.put("owner", currUser);
