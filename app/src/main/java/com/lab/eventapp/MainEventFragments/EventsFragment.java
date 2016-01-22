@@ -1,5 +1,6 @@
 package com.lab.eventapp.MainEventFragments;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.UsersEventsListAdapter;
 import com.lab.eventapp.R;
 import com.lab.eventapp.Singleton;
+import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
@@ -33,7 +36,9 @@ import models.UsersEvents;
  */
 public class EventsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+
     private ListView eventList;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -52,6 +57,14 @@ public class EventsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Toast t = Toast.makeText(getContext(),"On back", Toast.LENGTH_SHORT);
+        t.show();
+        RefreshEvents();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -59,13 +72,22 @@ public class EventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_events,container, false);
 
         eventList = (ListView)v.findViewById(R.id.listEvents);
+        RefreshEvents();
+        return v;
+    }
 
+
+    /**
+     * Refresh whole list of events in the fragment.
+     */
+    private void RefreshEvents() {
         //ArrayList<UsersEvents> events = Singleton.getInstance().getCurrentUser().usersEvents;
         AppUser currUser = new AppUser(ParseUser.getCurrentUser());
-        List<ParseEvent>  events = null;
+        List<ParseEvent> events = null;
         try {
             events = currUser.getUsersEvents();
         } catch (ParseException e) {
@@ -79,8 +101,6 @@ public class EventsFragment extends Fragment {
             UsersEventsListAdapter eventAdapter = new UsersEventsListAdapter(getContext(), events);
             eventList.setAdapter(eventAdapter);
         }
-
-        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI users
@@ -111,5 +131,4 @@ public class EventsFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
 }

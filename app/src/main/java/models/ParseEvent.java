@@ -1,5 +1,6 @@
 package models;
 
+import com.parse.DeleteCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -10,6 +11,8 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import bolts.Task;
 
 /**
  * Created by Adam on 2016-01-19.
@@ -82,4 +85,5 @@ public class ParseEvent extends ParseObject
     {
         put("place", place);
     }
+
 }

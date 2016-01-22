@@ -1,5 +1,6 @@
 package com.lab.eventapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.lab.eventapp.MainEventFragments.EventsFragment;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 import com.lab.eventapp.MainEventFragments.NotyficationsFragment;
 
+import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -220,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //            return null;
 //        }
+
+
+
     }
 
 }

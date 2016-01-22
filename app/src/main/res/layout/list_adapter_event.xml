@@ -32,6 +32,7 @@
         android:id="@+id/btnCancel"
         android:src="@android:drawable/ic_delete"
         android:background="#ffffff"
-        android:padding="10dp" />
+        android:padding="10dp"
+        />
 
 </LinearLayout>
