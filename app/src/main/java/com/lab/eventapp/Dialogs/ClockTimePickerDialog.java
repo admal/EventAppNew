@@ -11,6 +11,8 @@ import android.widget.TimePicker;
 import com.lab.eventapp.AddEventActivity;
 import com.lab.eventapp.R;
 
+import org.joda.time.LocalTime;
+
 
 /**
  * Created by Adam on 2015-11-28.
@@ -18,6 +20,9 @@ import com.lab.eventapp.R;
 public class ClockTimePickerDialog extends DialogFragment
 {
     private TimePicker clockPicker;
+    private boolean start;
+
+
     public ClockTimePickerDialog()
     {
 
@@ -25,6 +30,8 @@ public class ClockTimePickerDialog extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        start = getArguments().getBoolean("start");
+
         View v = inflater.inflate(R.layout.dialog_clock_picker, container);
         Button btnSave = (Button)v.findViewById(R.id.btnSave);
         Button btnCancel = (Button)v.findViewById(R.id.btnCancel);
@@ -34,12 +41,21 @@ public class ClockTimePickerDialog extends DialogFragment
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddEventActivity activity = (AddEventActivity)getActivity();
-                int hours =clockPicker.getCurrentHour();
+                AddEventActivity activity = (AddEventActivity) getActivity();
+               //int hours = clockPicker.getCurrentHour();
                 int minutes = clockPicker.getCurrentMinute();
+                 int hours = clockPicker.getCurrentHour();
+                LocalTime time = new LocalTime(hours,minutes);
+                activity.getTimeFromDialog(time, start);
 
-                activity.getTimeFromDialog(hours,minutes);
+                getDialog().dismiss();
+            }
+        });
 
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 getDialog().dismiss();
             }
         });

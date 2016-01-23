@@ -6,6 +6,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +21,15 @@ public class AppUser {
 
     //GETTERS
     public List<ParseEvent> getUsersEvents() throws ParseException {
-        ParseRelation<ParseEvent> relation = user.getRelation("events");
-        List<ParseEvent> events = relation.getQuery().find();
+        List<ParseUsersEvent> userEvents;
+        List<ParseEvent> events = new ArrayList<>();
+        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+        query.whereEqualTo("user",user);
+        userEvents = query.find();
+        for (ParseUsersEvent userEvent :
+                userEvents) {
+            events.add(userEvent.getEvent());
+        }
         return events;
     }
 
@@ -38,12 +46,7 @@ public class AppUser {
         if(event == null)
             throw new Exception("There is no event with the given id! (id: " + eventId + ")");
         return event;
-//        List<ParseEvent> events = query.find();
-//        if(events.size() > 1) //it means there is some error
-//            throw new Exception("There is more than 1 event with the given id!");
-//        if(events.size() == 1) //it means there is some error
-//            throw new Exception("There is no event with the given id! (id: " + eventId + ")");
-//        return events.get(0);
+
     }
 
     //SETTERS

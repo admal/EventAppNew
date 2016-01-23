@@ -6,189 +6,192 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.lab.eventapp.AddEventActivity">
 
-    <EditText
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/lblEventTitle"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:hint="Your event!" />
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Date:"
-        android:id="@+id/lblStart"
-        android:padding="10dp"
-        android:layout_alignBottom="@+id/tbDateStart"
-        android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:weightSum="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/tbDateStart"
-        android:clickable="true"
-        android:enabled="true"
-        android:padding="10dp"
-        android:textColor="#0004cc"
-        android:text="date"
-        android:background="#b2ff97f8"
-        android:maxWidth="0dp"
-        android:layout_alignTop="@+id/lblEndDate"
-        android:layout_alignStart="@+id/tbTimeStart"
-        android:layout_toStartOf="@+id/lblEndDate" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.HorizontalLayoutStyle">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Time:"
-        android:id="@+id/lblTimeStart"
-        android:padding="10dp"
-        android:layout_below="@+id/lblStart"
-        android:layout_alignParentStart="true" />
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tbEventTitle"
+                    android:hint="Event name" />
+            </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/tbTimeStart"
-        android:clickable="true"
-        android:enabled="false"
-        android:padding="10dp"
-        android:textColor="#cccccc"
-        android:text="time"
-        android:layout_alignTop="@+id/tbTimeEnd"
-        android:layout_toEndOf="@+id/lblPlace"
-        android:background="#b2ff97f8"
-        android:maxWidth="0dp" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.HorizontalLayoutStyle">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/tbDesc"
-        android:lines="15"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/lblDesc"
-        android:background="#b2ffc2ad"
-        android:padding="5dp"
-        android:gravity="top|left"
-        android:hint="Short description..."
-        android:layout_above="@+id/btnFriends"
-        android:layout_toEndOf="@+id/lblDesc" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Date"
+                    android:id="@+id/lblDate"
+                    android:paddingRight="8dp"
+                    style="@style/AppTheme.LabelAddEventStyle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Place:"
-        android:id="@+id/lblPlace"
-        android:padding="10dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/lblTimeStart" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/tbStartDate"
+                    android:paddingRight="10dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="To:"
-        android:id="@+id/lblEndDate"
-        android:padding="10dp"
-        android:layout_below="@+id/lblEventTitle"
-        android:layout_toStartOf="@+id/tbDateEnd" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="To"
+                    android:id="@+id/lblTo"
+                    android:paddingRight="8dp"
+                    style="@style/AppTheme.LabelAddEventStyle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="To:"
-        android:id="@+id/lblEndTime"
-        android:padding="10dp"
-        android:layout_above="@+id/tbPlace"
-        android:layout_alignStart="@+id/lblEndDate" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/tbEndDate" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/tbDateEnd"
-        android:clickable="true"
-        android:enabled="true"
-        android:padding="10dp"
-        android:textColor="#0004cc"
-        android:layout_alignTop="@+id/lblEndDate"
-        android:layout_toEndOf="@+id/tbTimeStart"
-        android:autoText="false"
-        android:background="#b2ff97f8" />
+            </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/tbTimeEnd"
-        android:clickable="true"
-        android:enabled="false"
-        android:padding="10dp"
-        android:textColor="#cccccc"
-        android:text="time"
-        android:layout_alignBottom="@+id/lblEndTime"
-        android:layout_toEndOf="@+id/lblEndTime"
-        android:background="#b2ff97f8" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                style="@style/AppTheme.HorizontalLayoutStyle">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Description:"
-        android:id="@+id/lblDesc"
-        android:padding="10dp"
-        android:layout_below="@+id/lblPlace"
-        android:layout_alignParentStart="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Time"
+                    android:id="@+id/lblTime"
+                    android:paddingRight="16dp"
+                    style="@style/AppTheme.LabelAddEventStyle" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tbPlace"
-        android:layout_above="@+id/lblDesc"
-        android:hint="place"
-        android:layout_toStartOf="@+id/lblEndTime"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignWithParentIfMissing="false" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/tbStartTime"
+                    android:paddingRight="10dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Add friends!"
-        android:id="@+id/btnFriends"
-        android:gravity="center"
-        android:background="#ffab96"
-        android:textColor="#ffffff"
-        android:padding="15dp"
-        android:layout_above="@+id/btnSave"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:enabled="false" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="To"
+                    android:id="@+id/lblEndTime"
+                    android:paddingRight="16dp"
+                    style="@style/AppTheme.LabelAddEventStyle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="DONE!"
-        android:id="@+id/btnSave"
-        android:layout_alignEnd="@+id/btnFriends"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:padding="15dp"
-        android:gravity="center"
-        android:background="#6eff6ac0"
-        android:onClick="SaveEvent"
-        />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/tbEndTime" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.HorizontalLayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Where?"
+                    android:id="@+id/lblPlace"
+                    android:paddingRight="10dp"
+                    style="@style/AppTheme.LabelAddEventStyle" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tbPlace"
+                    android:layout_weight="0.90"
+                    android:hint="at my house" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.HorizontalLayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Description"
+                    android:id="@+id/lblDesc"
+                    android:paddingRight="10dp"
+                    style="@style/AppTheme.LabelAddEventStyle" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:ems="10"
+                    android:id="@+id/tbDesc"
+                    android:layout_weight="1"
+                    android:lines="8"
+                    android:hint="Best party ever!!!" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ADD FRIENDS"
+                    android:id="@+id/btnFriends"
+                    style="@style/AppTheme.ButtonAddEventStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/AppTheme.HorizontalLayoutStyle">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="CREATE EVENT"
+                    android:id="@+id/btnSave"
+                    style="@style/AppTheme.ButtonAddEventStyle" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

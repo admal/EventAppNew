@@ -103,34 +103,34 @@ public class MainActivity extends AppCompatActivity {
 
 
         //TEMPORARY SECTION (just template for further coding)
-        final ParseUser currUser = ParseUser.getCurrentUser();
-        Log.d("parse", "Inherited: " + currUser.getUsername() + "; Email: " + currUser.getEmail());
-
-        ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
-
-        q.getInBackground("8o6TsyjT47", new GetCallback<ParseEvent>() {
-            @Override
-            public void done(ParseEvent object, ParseException e) {
-                if (e == null) {
-                    try {
-                        object.addUserToEvent(currUser);
-                        ParseObject user = object.getOwner();
-
-                        List<ParseUser> eventUsers = object.getUsers();
-                        for (ParseUser u :
-                                eventUsers) {
-                            Log.d("parse", "user in event: " + u.getUsername());
-                        }
-                        Log.d("parse", "Event title: " + object.getTitle());
-                        Log.d("parse", "owner: " + user.getString("username"));
-                    } catch (ParseException e1) {
-                        Log.d("parse", e1.getMessage());
-                    }
-                } else
-                    Log.d("parse", "again nothing :/");
-
-            }
-        });
+//        final ParseUser currUser = ParseUser.getCurrentUser();
+//        Log.d("parse", "Inherited: " + currUser.getUsername() + "; Email: " + currUser.getEmail());
+//
+//        ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
+//
+//        q.getInBackground("8o6TsyjT47", new GetCallback<ParseEvent>() {
+//            @Override
+//            public void done(ParseEvent object, ParseException e) {
+//                if (e == null) {
+//                    try {
+//                        object.addUserToEvent(currUser);
+//                        ParseObject user = object.getOwner();
+//
+//                        List<ParseUser> eventUsers = object.getUsers();
+//                        for (ParseUser u :
+//                                eventUsers) {
+//                            Log.d("parse", "user in event: " + u.getUsername());
+//                        }
+//                        Log.d("parse", "Event title: " + object.getTitle());
+//                        Log.d("parse", "owner: " + user.getString("username"));
+//                    } catch (ParseException e1) {
+//                        Log.d("parse", e1.getMessage());
+//                    }
+//                } else
+//                    Log.d("parse", "again nothing :/");
+//
+//            }
+//        });
 //
 //        ParseEvent event = new ParseEvent();
 //
@@ -167,6 +167,14 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
 
             return true;
+        }else if(id == R.id.action_logout)
+        {
+            ParseUser.logOut();
+            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+
+            finish();
+            startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);

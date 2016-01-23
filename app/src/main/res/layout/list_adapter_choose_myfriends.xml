@@ -4,14 +4,30 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <CheckedTextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="New CheckedTextView"
-        android:id="@+id/tbUserName"
-        android:checked="true"
-        android:padding="10dp"
-        android:enabled="true"
-        android:backgroundTint="@drawable/abc_btn_check_to_on_mtrl_000"
-        android:checkMark="@drawable/abc_btn_check_to_on_mtrl_000" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/tbUsername"
+            style="@style/AppTheme.LabelAddEventStyle"
+            android:layout_gravity="center_vertical" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_delete"
+            android:id="@+id/btnRemove" />
+    </LinearLayout>
 </LinearLayout>

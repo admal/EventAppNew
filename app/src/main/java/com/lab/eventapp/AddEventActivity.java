@@ -1,6 +1,4 @@
 package com.lab.eventapp;
-
-
 import android.app.ProgressDialog;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -16,30 +14,42 @@ import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.Dialogs.ClockTimePickerDialog;
 import com.lab.eventapp.Dialogs.DatePickerDialog;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 
 import models.AppUser;
 import models.ParseEvent;
+import models.ParseUsersEvent;
+import models.UsersEvents;
 
 public class AddEventActivity extends AppCompatActivity {
 
     FragmentManager fm = getSupportFragmentManager();
-    Date startDate;
-    Date endDate;
+    LocalDate startDate;
+    LocalDate endDate;
 
-    private ParseEvent event;
+    LocalTime startTime;
+    LocalTime endTime;
 
+    private ArrayList<ParseUser> addedUsers;
+    //private ParseEvent event;
 
     private  TextView tbStartDate ;
     private  TextView tbEndDate;
     private  TextView tbStartTime ;
-    private  TextView btAddFriends;
-    private  TextView tbnSaveEvent;
+    private  TextView btnAddFriends;
+    private  TextView btnSaveEvent;
     private  TextView tbTitle ;
     private  TextView tbPlace;
     private TextView tbEndTime;
@@ -50,60 +60,87 @@ public class AddEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        endDate = new Date();
-        startDate = new Date();
+        addedUsers = new ArrayList<>();
+        endDate = new LocalDate();
+        startDate = new LocalDate();
+        startTime = new LocalTime();
+        endTime = new LocalTime();
 
-        tbStartDate = (TextView) findViewById(R.id.tbDateStart);
-        tbEndDate = (TextView)findViewById(R.id.tbDateEnd);
-        tbStartTime = (TextView) findViewById(R.id.tbTimeStart);
-        btAddFriends = (TextView) findViewById(R.id.btnFriends);
-        tbnSaveEvent = (TextView)findViewById(R.id.btnSave);
-        tbTitle = (TextView)findViewById(R.id.lblEventTitle);
+        tbStartDate = (TextView) findViewById(R.id.tbStartDate);
+        tbEndDate = (TextView)findViewById(R.id.tbEndDate);
+        tbStartTime = (TextView) findViewById(R.id.tbStartTime);
+        tbEndTime = (TextView)findViewById(R.id.tbEndTime);
+        btnAddFriends = (TextView) findViewById(R.id.btnFriends);
+        btnSaveEvent = (TextView)findViewById(R.id.btnSave);
+        tbTitle = (TextView)findViewById(R.id.tbEventTitle);
         tbPlace = (TextView)findViewById(R.id.tbPlace);
-        tbEndTime = (TextView)findViewById(R.id.tbTimeEnd);
         tbDesc =  (TextView)findViewById(R.id.tbDesc);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         DateFormat timeFormat = new SimpleDateFormat("hh:mm");
 
-        tbStartDate.setText(dateFormat.format(startDate));
+        tbStartDate.setText(startDate.toString("dd/MM/yyyy"));
         tbStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog dc = new DatePickerDialog(true);
+                DatePickerDialog dc = new DatePickerDialog();
+                Bundle args = new Bundle();
+                args.putBoolean("start", true);
+                dc.setArguments(args);
                 dc.show(fm, "DatePicker");
             }
         });
 
-        tbEndDate.setText(dateFormat.format(endDate));
+        tbEndDate.setText(endDate.toString("dd/MM/yyyy"));
         tbEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog dc = new DatePickerDialog(false);
+                DatePickerDialog dc = new DatePickerDialog();
+                Bundle args = new Bundle();
+                args.putBoolean("start", false);
+                dc.setArguments(args);
                 dc.show(fm, "DatePicker");
             }
 
         });
 
-        tbStartTime.setText(timeFormat.format(startDate));
+        tbStartTime.setText(startTime.toString("HH:mm"));
         tbStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClockTimePickerDialog tp = new ClockTimePickerDialog();
+                Bundle args = new Bundle();
+                args.putBoolean("start", true);
+                tp.setArguments(args);
                 tp.show(fm, "ClockPicker");
             }
         });
 
-        tbEndTime.setText(timeFormat.format(endDate));
-        //TODO: add listener
+        tbEndTime.setText(endTime.toString("HH:mm"));
+        tbEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClockTimePickerDialog tp = new ClockTimePickerDialog();
+                Bundle args = new Bundle();
+                args.putBoolean("start", false);
+                tp.setArguments(args);
+                tp.show(fm, "ClockPicker");
+            }
+        });
 
-        tbStartTime.setText(timeFormat.format(endDate));
-        btAddFriends.setOnClickListener(new View.OnClickListener() {
+        btnAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ChooseFriendsDialog fd = new ChooseFriendsDialog();
-
                 fd.show(fm, "FriendsPicker");
+            }
+        });
+
+
+        btnSaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaveEvent(v);
             }
         });
     }
@@ -119,7 +156,10 @@ public class AddEventActivity extends AppCompatActivity {
         errorMsg += isEmpty("Start time", tbStartTime.getText().toString());
         errorMsg += isEmpty("End time", tbEndTime.getText().toString());
 
-        if(endDate.before(startDate))
+        LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
+        LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
+
+        if(startFinalDate.isAfter(endFinalDate))
             errorMsg += "End date can not be before start date!\n";
 
         if(errorMsg.length() == 0)
@@ -148,6 +188,10 @@ public class AddEventActivity extends AppCompatActivity {
         return "";
     }
 
+    /**
+     * Gets data from the form and creates the event.
+     * @param view
+     */
     public void SaveEvent(View view)
     {
         if(!ValidateForm())//there were errors
@@ -157,12 +201,18 @@ public class AddEventActivity extends AppCompatActivity {
         }
 
         final ParseEvent newEvent = new ParseEvent();
-        newEvent.setStartDate(startDate);
-        newEvent.setStartDate(endDate);
+        newEvent.setStartDate(startDate.toDate());
+        newEvent.setEndDate(endDate.toDate());
         newEvent.setTitle(tbTitle.getText().toString());
         newEvent.setDescription(tbDesc.getText().toString());
         newEvent.setPlace(tbPlace.getText().toString());
         newEvent.setOwner(ParseUser.getCurrentUser());
+
+        ParseRelation<ParseUser> relation = newEvent.getRelation("users");
+        for (ParseUser user :
+                addedUsers) {
+            relation.add(user);
+        }
 
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
         dlg.setTitle("Please wait.");
@@ -173,8 +223,23 @@ public class AddEventActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 AppUser user = new AppUser(ParseUser.getCurrentUser());
+
                 try {
-                    user.AddEvent(newEvent);
+                    user.AddEvent(newEvent); //add currentUser to the event
+                    //to every user the event is added
+                    for (ParseUser friend :
+                            addedUsers) {
+                        ParseUsersEvent usersEvent = new ParseUsersEvent();
+                        usersEvent.setUser(friend);
+                        usersEvent.setEvent(newEvent);
+                        usersEvent.save();
+                    }
+
+                    ParseUsersEvent usersEvent = new ParseUsersEvent(); //add yourself to the event
+                    usersEvent.setUser(ParseUser.getCurrentUser());
+                    usersEvent.setEvent(newEvent);
+                    usersEvent.save();
+
                 } catch (ParseException e1) {
                     e1.printStackTrace();
                 }
@@ -208,24 +273,32 @@ public class AddEventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getDateFromDialog(Date date, boolean start)
+    public void getDateFromDialog(LocalDate date, boolean start)
     {
-        TextView startDate = (TextView) findViewById(R.id.tbDateStart);
-        TextView endDate = (TextView) findViewById(R.id.tbDateEnd);
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         if(start) {
-            this.startDate = date;
-            startDate.setText(df.format(date));
+            this.startDate = new LocalDate(date);
+            tbStartDate.setText(date.toString("dd/MM/yyyy"));
         }
         else {
-            this.endDate = date;
-            endDate.setText(df.format(date));
+            this.endDate = new LocalDate(date);
+            tbEndDate.setText(date.toString("dd/MM/yyyy"));
         }
 
     }
-    public void getTimeFromDialog(int hours, int minutes)
+    public void getTimeFromDialog(LocalTime time, boolean start)
     {
-        TextView startTime = (TextView) findViewById(R.id.tbTimeStart);
-        startTime.setText(hours + " : " + minutes);
+        //TextView startTime = (TextView) findViewById(R.id.tbTimeStart);
+        if (start) {
+            startTime = time;
+            tbStartTime.setText(time.toString("HH:mm"));
+        }
+        else {
+            endTime = time;
+            tbEndTime.setText(time.toString("HH:mm"));
+        }
+    }
+    public void addUsers(ArrayList<ParseUser> users)
+    {
+        addedUsers = users;
     }
 }

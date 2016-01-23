@@ -4,6 +4,29 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/tbUsername"
+            android:layout_weight="1"
+            android:hint="Username" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"
+            android:id="@+id/btnAddUser"
+            style="@style/AppTheme.ButtonAddEventStyle"
+            />
+    </LinearLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="406dp"
@@ -14,20 +37,27 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="1">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
-            android:id="@+id/btnCancel" />
+            android:id="@+id/btnCancel"
+            style="@style/AppTheme.ButtonAddEventStyle"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Done"
-            android:id="@+id/btnSave" />
+            android:id="@+id/btnSave"
+            style="@style/AppTheme.ButtonAddEventStyle"/>
     </LinearLayout>
 
 </LinearLayout>

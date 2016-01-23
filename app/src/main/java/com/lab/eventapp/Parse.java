@@ -3,6 +3,7 @@ package com.lab.eventapp;
 import com.parse.ParseObject;
 
 import models.ParseEvent;
+import models.ParseUsersEvent;
 
 /**
  * Created by Alpha on 1/19/2016.
@@ -15,6 +16,7 @@ public class Parse extends android.app.Application {
 
         com.parse.Parse.enableLocalDatastore(this);
         ParseObject.registerSubclass(ParseEvent.class);
+        ParseObject.registerSubclass(ParseUsersEvent.class);
         com.parse.Parse.initialize(this);
 
         //TODO: Remove
