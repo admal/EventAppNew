@@ -1,5 +1,6 @@
 package com.lab.eventapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,16 +21,22 @@ import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 import com.lab.eventapp.MainEventFragments.NotyficationsFragment;
 
 import com.parse.FindCallback;
+import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import models.ParseEvent;
@@ -233,6 +240,14 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
 
             return true;
+        }else if(id == R.id.action_logout)
+        {
+            ParseUser.logOut();
+            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+
+            finish();
+            startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);

@@ -8,14 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.MyEventsListAdapter;
 import com.lab.eventapp.R;
-import com.lab.eventapp.Singleton;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import models.Event;
+import models.AppUser;
+import models.ParseEvent;
 
 
 /**
@@ -26,7 +29,7 @@ import models.Event;
  * Use the {@link MyEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyEventsFragment extends Fragment {
+public class MyEventsFragment extends Fragment implements IRefreshable {
 
     private OnFragmentInteractionListener mListener;
     private ListView eventList;
@@ -36,7 +39,6 @@ public class MyEventsFragment extends Fragment {
      * this fragment using the provided parameters.
      * @return A new instance of fragment MyEventsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MyEventsFragment newInstance() {
         MyEventsFragment fragment = new MyEventsFragment();
         Bundle args = new Bundle();
@@ -55,25 +57,43 @@ public class MyEventsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        RefreshList();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_my_events, container, false);
 
         eventList = (ListView)v.findViewById(R.id.listEvents);
-//        ArrayList<Event> events
-//                = Singleton.getInstance().getEventRepo().getUsersEvents(Singleton.getInstance().getCurrentUser().getId());
-        ArrayList<Event> events = Singleton.getInstance().getCurrentUser().createdEvents;
+        RefreshList();
+
+
+        return v;
+    }
+
+    public  void RefreshList() {
+        //ArrayList<Event> events = Singleton.getInstance().getCurrentUser().createdEvents;
+        AppUser user = new AppUser(ParseUser.getCurrentUser());
+        List<ParseEvent> events = null;
+        try {
+            events = user.getCreatedEvents();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if(events == null) {
             TextView noEventsTextBox = new TextView(getContext());
             noEventsTextBox.setText( "You have not any upcoming events! Add friends to keep in touch with them. ;)");
         }
         else {
-            MyEventsListAdapter eventAdapter = new MyEventsListAdapter(getContext(), events);
+            MyEventsListAdapter eventAdapter = new MyEventsListAdapter(getContext(), events, this);
             eventList.setAdapter(eventAdapter);
         }
-
-        return v;
+        Toast t = Toast.makeText(getContext(),"List refreshed", Toast.LENGTH_SHORT);
+        t.show();
     }
 
     // TODO: Rename method, update argument and hook method into UI users

@@ -1,5 +1,6 @@
 package com.lab.eventapp.MainEventFragments;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,13 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.UsersEventsListAdapter;
 import com.lab.eventapp.R;
 import com.lab.eventapp.Singleton;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import models.AppUser;
+import models.ParseEvent;
 import models.UsersEvents;
 
 
@@ -27,17 +35,7 @@ import models.UsersEvents;
  * create an instance of this fragment.
  */
 public class EventsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
 
     private ListView eventList;
 
@@ -47,7 +45,6 @@ public class EventsFragment extends Fragment {
      *
      * @return A new instance of fragment EventsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
         Bundle args = new Bundle();
@@ -60,6 +57,14 @@ public class EventsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Toast t = Toast.makeText(getContext(),"On back", Toast.LENGTH_SHORT);
+        t.show();
+        RefreshEvents();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -67,15 +72,27 @@ public class EventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_events, container, false);
 
         View v = inflater.inflate(R.layout.fragment_events,container, false);
 
         eventList = (ListView)v.findViewById(R.id.listEvents);
-//        ArrayList<UsersEvents> events
-//                = Singleton.getInstance().getUsersEventRepo().getAllUsersEvents(Singleton.getInstance().getCurrentUser().getId());
-        ArrayList<UsersEvents> events = Singleton.getInstance().getCurrentUser().usersEvents;
+        RefreshEvents();
+        return v;
+    }
+
+
+    /**
+     * Refresh whole list of events in the fragment.
+     */
+    private void RefreshEvents() {
+        //ArrayList<UsersEvents> events = Singleton.getInstance().getCurrentUser().usersEvents;
+        AppUser currUser = new AppUser(ParseUser.getCurrentUser());
+        List<ParseEvent> events = null;
+        try {
+            events = currUser.getUsersEvents();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if(events == null) {
             TextView noEventsTextBox = new TextView(getContext());
             noEventsTextBox.setText( "You have not any upcoming events! Add friends to keep in touch with them. ;)");
@@ -84,8 +101,6 @@ public class EventsFragment extends Fragment {
             UsersEventsListAdapter eventAdapter = new UsersEventsListAdapter(getContext(), events);
             eventList.setAdapter(eventAdapter);
         }
-
-        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI users
@@ -116,5 +131,4 @@ public class EventsFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
 }

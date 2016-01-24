@@ -1,7 +1,12 @@
 package Data.Repositories;
 
+import com.parse.GetCallback;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 
+import bolts.Task;
 import models.User;
 
 /**
@@ -21,5 +26,12 @@ public class UsersRepository
                 return user;
         }
         return  null;
+    }
+
+    public Task<ParseUser> getUser(String username)
+    {
+        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+        query.whereEqualTo("username", username);
+        return query.getFirstInBackground();
     }
 }

@@ -4,6 +4,7 @@ import com.parse.ParseObject;
 
 import models.ParseEvent;
 import models.ParseMessage;
+import models.ParseUsersEvent;
 
 
 public class Parse extends android.app.Application {
@@ -15,6 +16,7 @@ public class Parse extends android.app.Application {
         com.parse.Parse.enableLocalDatastore(this);
 
         ParseObject.registerSubclass(ParseEvent.class);
+        ParseObject.registerSubclass(ParseUsersEvent.class);
         ParseObject.registerSubclass(ParseMessage.class);
         com.parse.Parse.initialize(this);
 
