@@ -19,16 +19,21 @@ import com.lab.eventapp.MainEventFragments.EventsFragment;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 import com.lab.eventapp.MainEventFragments.NotyficationsFragment;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import models.ParseEvent;
+import models.ParseMessage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     @Override
+    public void onBackPressed()
+    {
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -99,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
         ParseUser currUser = ParseUser.getCurrentUser();
         Log.d("parse", "Inherited: " + currUser.getUsername() + "Email: " + currUser.getEmail());
 
+        final ParseMessage message = new ParseMessage();
+        message.setSender(currUser);
+
         ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
         q.getInBackground("8o6TsyjT47", new GetCallback<ParseEvent>() {
             @Override
@@ -106,18 +122,84 @@ public class MainActivity extends AppCompatActivity {
                 if (e == null) {
                     try {
                         ParseObject user = object.getOwner();
-                        Log.d("parse","Event title: " + object.getTitle());
+
+                        message.setEvent(object);
+                        message.setContent("Testing sending message to parse.");
+                        message.saveInBackground();
+
+                        Log.d("parse", "Event title: " + object.getTitle());
                         Log.d("parse", "owner: " + user.getString("username"));
                     } catch (ParseException e1) {
-                        Log.d("parse",e.getMessage());
+                        Log.d("parse", e.getMessage());
                     }
-                }
-                else
+                } else
                     Log.d("parse", "again nothing :/");
 
             }
         });
+
+
+//        ParseQuery<ParseEvent> q2 = ParseQuery.getQuery("Message");
+//        q2.getInBackground( new GetCallback<ParseEvent>() {
+//            @Override
+//            public void done(ParseEvent object, ParseException e) {
+//                if (e == null) {
+//                    try {
+//                        ParseObject user = object.getOwner();
 //
+//                        message.setEvent(object);
+//                        message.setContent("Testing sending message to parse.");
+//                        message.saveInBackground();
+//
+//                        Log.d("parse", "Event title: " + object.getTitle());
+//                        Log.d("parse", "owner: " + user.getString("username"));
+//                    } catch (ParseException e1) {
+//                        Log.d("parse", e.getMessage());
+//                    }
+//                } else
+//                    Log.d("parse", "again nothing :/");
+//
+//            }
+//        });
+
+        ParseQuery<ParseMessage> query = ParseQuery.getQuery("Message");
+        query.whereEqualTo("sender", currUser);
+        query.findInBackground(new FindCallback<ParseMessage>() {
+            public void done(List<ParseMessage> messages, ParseException e) {
+                if (e == null) {
+                    Log.d("Message", "Retrieved " + messages.size() + " scores");
+                    for (ParseMessage message : messages) {
+                        Log.d("Message", "Content: " + message.getContent());
+                    }
+
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+        ParsePush.subscribeInBackground("Giants");
+
+        ParsePush push = new ParsePush();
+        push.setChannel("Giants");
+        push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
+        push.sendInBackground();
+
+
+
+//        public void addUserToEvent(ParseUser user) throws ParseException
+//        {
+//            ParseRelation<ParseObject> relation = getRelation("users");
+//            relation.add(user);
+//            save();
+//        }
+
+
+
+//        ParseQuery<ParseMessage> messageQuery = ParseQuery.getQuery("Message");
+//        messageQuery.
+
+
 //        ParseObject event = new ParseObject("Event");
 //        event.put("title", "From android");
 //        event.put("endDate", new Date());

@@ -3,10 +3,9 @@ package com.lab.eventapp;
 import com.parse.ParseObject;
 
 import models.ParseEvent;
+import models.ParseMessage;
 
-/**
- * Created by Alpha on 1/19/2016.
- */
+
 public class Parse extends android.app.Application {
 
     @Override
@@ -14,7 +13,9 @@ public class Parse extends android.app.Application {
         super.onCreate();
 
         com.parse.Parse.enableLocalDatastore(this);
+
         ParseObject.registerSubclass(ParseEvent.class);
+        ParseObject.registerSubclass(ParseMessage.class);
         com.parse.Parse.initialize(this);
 
         //TODO: Remove
