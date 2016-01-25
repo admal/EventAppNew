@@ -12,7 +12,6 @@ public class Parse extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         com.parse.Parse.enableLocalDatastore(this);
 
         ParseObject.registerSubclass(ParseEvent.class);

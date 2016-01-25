@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -53,6 +55,13 @@ public class MessagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+
+        InternetConnectionService service = new InternetConnectionService(MessagesActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(MessagesActivity.this);
+            return;
+        }
 
         Intent intent = getIntent();
         final String eventId = intent.getStringExtra("eventId");

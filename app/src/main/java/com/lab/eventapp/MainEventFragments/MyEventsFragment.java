@@ -1,6 +1,5 @@
 package com.lab.eventapp.MainEventFragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.lab.eventapp.ActivityInterfaces.IRefreshable;
 import com.lab.eventapp.ListAdapters.MyEventsListAdapter;
 import com.lab.eventapp.R;
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
@@ -73,6 +75,13 @@ public class MyEventsFragment extends Fragment implements IRefreshable {
      * Refresh and redraw list of events.
      */
     public  void RefreshList() {
+        InternetConnectionService service = new InternetConnectionService(getActivity());
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(getActivity());
+            return;
+        }
+
         AppUser user = new AppUser(ParseUser.getCurrentUser());
         List<ParseEvent> events = null;
         try {

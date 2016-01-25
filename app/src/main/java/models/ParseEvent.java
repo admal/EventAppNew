@@ -64,6 +64,22 @@ public class ParseEvent extends ParseObject
         }
         return users;
     }
+    /**
+     * Gets all users invited to the event (also owner).
+     * @return List interface filled with users
+     * @throws ParseException if any of UsersEvent was not found
+     */
+    public List<ParseUser> getAllUsers() throws ParseException {
+        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+        query.whereEqualTo("event", this);
+        List<ParseUsersEvent> eventUsers =  query.find();
+        List<ParseUser> users = new ArrayList<>();
+        for (ParseUsersEvent u : eventUsers) {
+            users.add(u.getUser());
+        }
+        return users;
+    }
+
     public String getPlace()
     {
         return getString("place");
@@ -115,6 +131,12 @@ public class ParseEvent extends ParseObject
                 return;
             }
         }
+    }
+
+    public List<ParseUsersEvent> getUsersEvents() throws ParseException {
+        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+        query.whereEqualTo("event", this);
+         return query.find();
     }
 
 }

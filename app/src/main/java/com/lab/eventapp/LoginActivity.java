@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -38,6 +40,13 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        InternetConnectionService service = new InternetConnectionService(LoginActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(LoginActivity.this);
+            return;
+        }
 
 
         tbUsername = (TextView) findViewById(R.id.tbLogin);

@@ -1,4 +1,4 @@
-package com.lab.eventapp.MainEventFragments;
+package com.lab.eventapp.ActivityInterfaces;
 
 /**
  * Created by Adam on 2016-01-22.

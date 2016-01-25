@@ -9,6 +9,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.ParseUser;
 
 /**
@@ -20,14 +22,16 @@ public class DispatchActivity extends Activity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        InternetConnectionService service = new InternetConnectionService(DispatchActivity.this);
+//        service.CheckInternetConnection();
+        //I don't know why InternetConnectionService can't be used
+
+        // Check if there is internet connection: If there isn't show pop up dialog and close application
+        ConnectivityManager cm = (ConnectivityManager) DispatchActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-
-        // Check if there is internet connection: If there isn't show pop up dialog and close application
         if(!isConnected)
         {
             AlertDialog.Builder builder1=new AlertDialog.Builder(DispatchActivity.this);
@@ -37,11 +41,12 @@ public class DispatchActivity extends Activity {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    finish();
+                    finishAffinity();
                 }
             });
 
             builder1.show();
+            ModalService.ShowNoConnetionError(DispatchActivity.this);
         }
         else //If there is manage activities
         {

@@ -12,15 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.lab.eventapp.AddEventActivity;
-import com.lab.eventapp.MainEventFragments.IRefreshable;
-import com.lab.eventapp.MainEventFragments.MyEventsFragment;
+import com.lab.eventapp.ActivityInterfaces.IRefreshable;
 import com.lab.eventapp.R;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.List;
 
 import models.ParseEvent;
+import models.ParseUsersEvent;
 
 /**
  * Created by Adam on 2015-11-24.
@@ -123,13 +124,25 @@ public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
         dlg.setTitle("Please wait.");
         dlg.setMessage("Removing event.  Please wait.");
         dlg.show();
+        ParseEvent ev = events.get(id);
 
-        events.get(id).deleteInBackground(new DeleteCallback() {
-            @Override
-            public void done(ParseException e) {
-                dlg.dismiss();
-                refreshableActivity.RefreshList();
+        try {
+            List<ParseUser> usersEvents = ev.getAllUsers();
+
+            for (ParseUser u :
+                    usersEvents) {
+                ev.removeUser(u);
             }
-        });
+            ev.deleteInBackground(new DeleteCallback() {
+                @Override
+                public void done(ParseException e) {
+                    dlg.dismiss();
+                    refreshableActivity.RefreshList();
+                }
+            });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 }

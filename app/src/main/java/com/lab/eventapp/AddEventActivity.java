@@ -2,7 +2,6 @@ package com.lab.eventapp;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +14,12 @@ import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.Dialogs.ClockTimePickerDialog;
 import com.lab.eventapp.Dialogs.DatePickerDialog;
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -67,6 +67,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
      */
     private List<ParseUser> addedUsers;
 
+    //views
     private  TextView tbStartDate ;
     private  TextView tbEndDate;
     private  TextView tbStartTime ;
@@ -82,6 +83,12 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
+        InternetConnectionService service = new InternetConnectionService(AddEventActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(AddEventActivity.this);
+            return;
+        }
 
         tbStartDate = (TextView) findViewById(R.id.tbStartDate);
         tbEndDate = (TextView)findViewById(R.id.tbEndDate);
@@ -92,7 +99,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         tbTitle = (TextView)findViewById(R.id.tbEventTitle);
         tbPlace = (TextView)findViewById(R.id.tbPlace);
         tbDesc =  (TextView)findViewById(R.id.tbDesc);
-
 
         addedUsers = new ArrayList<>();
         endDate = new LocalDate();
@@ -129,7 +135,8 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                         try {
                             addedUsers = loadedEvent.getUsers();
                         } catch (ParseException e1) {
-                            showErrorModal("Error occured while proceding users!");
+                            ModalService.ShowErrorModal("Error occured while proceding users!", AddEventActivity.this);
+                            finish();
                         }
                         dlg.dismiss();
                     }
@@ -137,12 +144,25 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                     {
                         dlg.dismiss();
                         showErrorModal("There is no such event!");
+                        finish();
                     }
                 }
             });
         }
 
         tbStartDate.setText(startDate.toString("dd/MM/yyyy"));
+        tbEndDate.setText(endDate.toString("dd/MM/yyyy"));
+        tbStartTime.setText(startTime.toString("HH:mm"));
+        tbEndTime.setText(endTime.toString("HH:mm"));
+
+        setOnClickListeners();
+    }
+
+    /**
+     * Sets onClickListeners for each clickable view in the activity.
+     */
+    private void setOnClickListeners()
+    {
         tbStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +174,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
             }
         });
 
-        tbEndDate.setText(endDate.toString("dd/MM/yyyy"));
         tbEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,7 +186,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
 
         });
 
-        tbStartTime.setText(startTime.toString("HH:mm"));
         tbStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +197,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
             }
         });
 
-        tbEndTime.setText(endTime.toString("HH:mm"));
         tbEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,12 +270,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
             return true;
         else
         {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(errorMsg);
-            dialog.setTitle("Error!");
-            dialog.setPositiveButton("OK", null);
-            dialog.setCancelable(true);
-            dialog.create().show();
+            ModalService.ShowErrorModal(errorMsg, AddEventActivity.this);
             return  false;
         }
     }
@@ -297,13 +309,12 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         loadedEvent.setTitle(tbTitle.getText().toString());
         loadedEvent.setDescription(tbDesc.getText().toString());
         loadedEvent.setPlace(tbPlace.getText().toString());
-
-        ParseRelation<ParseUser> relation = loadedEvent.getRelation("users");
-        for (ParseUser user :
-                addedUsers) {
-            relation.add(user);
-
-        }
+//
+//        ParseRelation<ParseUser> relation = loadedEvent.getRelation("users");
+//        for (ParseUser user :
+//                addedUsers) {
+//            relation.add(user);
+//        }
 
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
         dlg.setTitle("Please wait.");
@@ -342,6 +353,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                     }
 
                 } catch (ParseException e1) {
+                    ModalService.ShowErrorModal("Could not edit event!", AddEventActivity.this);
                     e1.printStackTrace();
                 }
                 dlg.dismiss();
@@ -375,8 +387,12 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         newEvent.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                AppUser user = new AppUser(ParseUser.getCurrentUser());
-
+                if(e != null)//there was error
+                {
+                    dlg.dismiss();
+                    ModalService.ShowErrorModal("Could not create event!", AddEventActivity.this);
+                    return;
+                }
                 try {
                     for (ParseUser friend :
                             addedUsers) {
@@ -395,36 +411,16 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                     usersEvent.setUser(ParseUser.getCurrentUser());
                     usersEvent.setEvent(newEvent);
                     usersEvent.save();
+                    dlg.dismiss();
+                    finish();
 
-                } catch (ParseException e1) {
+                } catch (Exception e1) {
+                    dlg.dismiss();
                     e1.printStackTrace();
+                    ModalService.ShowErrorModal("Could not create event!", AddEventActivity.this);
                 }
-                dlg.dismiss();
-                finish();
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_event, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**

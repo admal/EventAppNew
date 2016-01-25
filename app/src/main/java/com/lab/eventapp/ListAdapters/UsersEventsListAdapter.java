@@ -8,10 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.lab.eventapp.R;
 import com.lab.eventapp.UsersEventDetailsActivity;
 import com.parse.ParseException;
@@ -62,14 +63,10 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
         if(idx < events.size())
         {
             TextView titleTb = (TextView) v.findViewById(R.id.lblEventTitle);
-            final Switch isGoingSwitch = (Switch) v.findViewById(R.id.switchIsGoing);
+            final Button btnLeave = (Button) v.findViewById(R.id.btnLeave);
             TextView dateTb = (TextView) v.findViewById(R.id.lblDate);
-            if(titleTb != null && isGoingSwitch != null && dateTb != null)
+            if(titleTb != null && btnLeave != null && dateTb != null)
             {
-                if(event.getEndDate().isBefore(new LocalDateTime()))
-                {
-
-                }
                 titleTb.setText(event.getTitle());
 
                 LocalDateTime d = event.getStartDate();
@@ -78,20 +75,19 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                 try {
                     if (event.getOwner() == ParseUser.getCurrentUser())
                     {
-                        isGoingSwitch.setEnabled(false);
+                        btnLeave.setEnabled(false);
                     }
-                    isGoingSwitch.setChecked(true);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                isGoingSwitch.setTag(event.getObjectId());
-                isGoingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                btnLeave.setTag(event.getObjectId());
+                btnLeave.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    public void onClick(View v) {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         dialog.dismiss();
                                         try {
@@ -100,12 +96,12 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                                             notifyDataSetChanged();
                                         } catch (ParseException e) {
                                             e.printStackTrace();
+                                            ModalService.ShowErrorModal("Unknown error occured!", context);
                                         }
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
                                         //No button clicked
-                                        isGoingSwitch.setEnabled(true);
                                         dialog.dismiss();
                                         break;
                                 }
@@ -116,6 +112,7 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                                 .setNegativeButton("No", dialogClickListener).show();
                     }
                 });
+
             }
         }
         v.setOnClickListener(new View.OnClickListener() {

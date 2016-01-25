@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -26,6 +28,13 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        InternetConnectionService service = new InternetConnectionService(RegisterActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(RegisterActivity.this);
+            return;
+        }
 
         // Set up the login form.
         tbUsername = (EditText) findViewById(R.id.tbLogin);

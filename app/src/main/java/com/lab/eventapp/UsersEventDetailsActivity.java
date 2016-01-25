@@ -15,6 +15,8 @@ import android.widget.ListView;
 import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.ListAdapters.ChooseFriendsListAdapter;
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -65,10 +67,17 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_event_details);
+
+        InternetConnectionService service = new InternetConnectionService(UsersEventDetailsActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(UsersEventDetailsActivity.this);
+            return;
+        }
+
         Intent intent = getIntent();
         final String eventId = intent.getStringExtra("eventid");
 
-        AppUser user = new AppUser(ParseUser.getCurrentUser());
         try {
             ParseQuery<ParseEvent> query  = ParseQuery.getQuery("Event");
              event = query.get(eventId);
@@ -96,7 +105,7 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
         try {
             users = event.getUsers();
             listUsers.setAdapter(new ChooseFriendsListAdapter(getBaseContext(), users, isAdmin));
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -140,31 +149,6 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
         tbEndDate.setEnabled(isAdmin);
         tbEndTime.setEnabled(isAdmin);
         tbDesc.setEnabled(isAdmin);
-    }
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_users_event_details, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**

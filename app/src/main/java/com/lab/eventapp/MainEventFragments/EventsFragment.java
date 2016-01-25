@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.UsersEventsListAdapter;
 import com.lab.eventapp.R;
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
@@ -76,6 +78,13 @@ public class EventsFragment extends Fragment {
      * Refresh whole list of events in the fragment.
      */
     public void RefreshEvents() {
+        InternetConnectionService service = new InternetConnectionService(getActivity());
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(getActivity());
+            return;
+        }
+
         AppUser currUser = new AppUser(ParseUser.getCurrentUser());
         List<ParseEvent> events = null;
         try {

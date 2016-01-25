@@ -24,6 +24,8 @@ import android.view.View;
 import com.lab.eventapp.MainEventFragments.EventsFragment;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 
+import com.lab.eventapp.Services.InternetConnectionService;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -68,8 +70,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        InternetConnectionService service = new InternetConnectionService(MainActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(MainActivity.this);
+            return;
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,38 +93,16 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ConnectivityManager cm =
-                        (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                boolean isConnected = activeNetwork != null &&
-                        activeNetwork.isConnectedOrConnecting();
-
-                // Check if there is internet connection: If there isn't show pop up dialog and close application
-                if (!isConnected) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-
-                    builder1.setMessage("There is no internet connection. Please fix the problem and reload application.");
-                    builder1.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //moveTaskToBack(true);
-                            android.os.Process.killProcess(android.os.Process.myPid());
-                            System.exit(0);
-                        }
-                    });
-
-                    builder1.show();
-                } else {
+//                InternetConnectionService service = new InternetConnectionService();
+//                boolean isConnected = service.isInternetConnection(MainActivity.this);
+//                // Check if there is internet connection: If there isn't show pop up dialog and close application
+//                if (!isConnected) {
+//                    ModalService.ShowNoConnetionError(MainActivity.this);
+//
+//                } else {
                     Intent intent = new Intent(getBaseContext(), AddEventActivity.class);
                     startActivity(intent);
-                }
-
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
+                //}
             }
         });
     }
