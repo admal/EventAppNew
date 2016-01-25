@@ -1,13 +1,9 @@
 package models;
 
-import android.util.Log;
-
-import com.parse.DeleteCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.joda.time.LocalDateTime;
