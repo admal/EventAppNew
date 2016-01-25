@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -31,7 +32,7 @@ public class UsersEventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users_event_details);
         Intent intent = getIntent();
         //int eventId = intent.getIntExtra("eventid", -1) + 1; //we give here index in table but ids start from 1
-        String eventId = intent.getStringExtra("eventid");
+        final String eventId = intent.getStringExtra("eventid");
 
        // EventsRepository eventRepo = Singleton.getInstance().getEventRepo();
 
@@ -77,6 +78,16 @@ public class UsersEventDetailsActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+            Button btnMessages = (Button) findViewById(R.id.btnSeeMsg);
+            final Bundle information = new Bundle();
+            information.putString("eventId", eventId);
+            btnMessages.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(UsersEventDetailsActivity.this, MessagesActivity.class).putExtra("eventId", eventId));
+                }
+            });
         }
 
     }

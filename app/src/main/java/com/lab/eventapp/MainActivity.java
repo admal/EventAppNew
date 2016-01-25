@@ -185,13 +185,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ParsePush.subscribeInBackground("Giants");
-
-        ParsePush push = new ParsePush();
-        push.setChannel("Giants");
-        push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
-        push.sendInBackground();
-
 
 
 //        public void addUserToEvent(ParseUser user) throws ParseException

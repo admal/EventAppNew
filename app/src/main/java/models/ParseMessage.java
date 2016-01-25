@@ -5,6 +5,8 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.Date;
+
 @ParseClassName("Message")
 public class ParseMessage extends ParseObject
 {
@@ -19,10 +21,17 @@ public class ParseMessage extends ParseObject
         return  sender;
     }
 
+    public String getSenderUsername() throws ParseException {
+        ParseUser sender = this.getParseObject("sender").fetchIfNeeded();
+        String name = sender.getUsername();
+        return  name;
+    }
+
     public ParseEvent getEvent() throws ParseException {
         ParseEvent event = this.getParseObject("event").fetchIfNeeded();
         return  event;
     }
 
     public String getContent() {return getString("content");}
+    public Date getCreatedDate() {return getDate("createdAt");}
 }
