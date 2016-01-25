@@ -111,10 +111,38 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ConnectivityManager cm =
+                        (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+
+                // Check if there is internet connection: If there isn't show pop up dialog and close application
+                if (!isConnected) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+
+                    builder1.setMessage("There is no internet connection. Please fix the problem and reload application.");
+                    builder1.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //moveTaskToBack(true);
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            System.exit(0);
+                        }
+                    });
+
+                    builder1.show();
+                } else {
+                    Intent intent = new Intent(getBaseContext(), AddEventActivity.class);
+                    startActivity(intent);
+                }
+
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                Intent intent = new Intent(getBaseContext(), AddEventActivity.class);
-                startActivity(intent);
+
             }
         });
 
@@ -128,44 +156,6 @@ public class MainActivity extends AppCompatActivity {
         final ParseMessage message = new ParseMessage();
         message.setSender(currUser);
 
-        ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
-        q.getInBackground("8o6TsyjT47", new GetCallback<ParseEvent>() {
-            @Override
-            public void done(ParseEvent object, ParseException e) {
-                if (e == null) {
-                    try {
-                        ParseObject user = object.getOwner();
-
-                        message.setEvent(object);
-                        message.setContent("Testing sending message to parse.");
-                        message.saveInBackground();
-
-                        Log.d("parse", "Event title: " + object.getTitle());
-                        Log.d("parse", "owner: " + user.getString("username"));
-                    } catch (ParseException e1) {
-                        Log.d("parse", e.getMessage());
-                    }
-                } else
-                    Log.d("parse", "again nothing :/");
-
-            }
-        });
-
-        ParseQuery<ParseMessage> query = ParseQuery.getQuery("Message");
-        query.whereEqualTo("sender", currUser);
-        query.findInBackground(new FindCallback<ParseMessage>() {
-            public void done(List<ParseMessage> messages, ParseException e) {
-                if (e == null) {
-                    Log.d("Message", "Retrieved " + messages.size() + " scores");
-                    for (ParseMessage message : messages) {
-                        Log.d("Message", "Content: " + message.getContent());
-                    }
-
-                } else {
-                    Log.d("score", "Error: " + e.getMessage());
-                }
-            }
-        });
     }
 
     @Override
@@ -233,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 2;
         }
+
 
 //        @Override
 //        public CharSequence getPageTitle(int position) {
