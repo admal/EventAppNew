@@ -1,6 +1,7 @@
 package com.lab.eventapp.ListAdapters;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -84,6 +85,12 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                 btnLeave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        final ProgressDialog dlg = new ProgressDialog(getContext());
+                        dlg.setTitle("Please wait.");
+                        dlg.setMessage("Removing event.  Please wait.");
+                        dlg.setCancelable(false);
+                        dlg.show();
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -94,8 +101,10 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                                             event.removeUser(ParseUser.getCurrentUser());
                                             events.remove(event);
                                             notifyDataSetChanged();
+                                            dlg.dismiss();
                                         } catch (ParseException e) {
                                             e.printStackTrace();
+                                            dlg.dismiss();
                                             ModalService.ShowErrorModal("Unknown error occured!", context);
                                         }
                                         break;

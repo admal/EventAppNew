@@ -143,7 +143,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                     else
                     {
                         dlg.dismiss();
-                        showErrorModal("There is no such event!");
+                        ModalService.ShowErrorModal("There is no such event!", AddEventActivity.this);
                         finish();
                     }
                 }
@@ -232,17 +232,17 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         return addedUsers;
     }
 
-    private void showErrorModal(String errorMsg)
-    {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getBaseContext());
-        builder.setMessage(errorMsg);
-        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-    }
+//    private void showErrorModal(String errorMsg)
+//    {
+//        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getBaseContext());
+//        builder.setMessage(errorMsg);
+//        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                finish();
+//            }
+//        });
+//    }
 
     /**
      * Validate input. Only description can be empty. Start date can not be after end date.
@@ -284,7 +284,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
     {
         if(!ValidateForm())//there were errors
         {
-            showErrorModal("Unknown error occured!");
+            ModalService.ShowErrorModal("Unknown error occured!", AddEventActivity.this);
             return;
         }
         if(loadedEvent != null) //editing event

@@ -55,10 +55,6 @@ public class ChooseFriendsListAdapter extends ArrayAdapter<ParseUser>
                 @Override
                 public void onClick(View v) {
                     users.remove(idx);
-//                    for(ParseUser userPush : users)
-//                    {
-//
-//                    }
                     notifyDataSetChanged();
                 }
             });

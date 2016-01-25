@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.lab.eventapp.AddEventActivity;
 import com.lab.eventapp.ActivityInterfaces.IRefreshable;
 import com.lab.eventapp.R;
+import com.lab.eventapp.Services.ModalService;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -140,8 +141,9 @@ public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
                     refreshableActivity.RefreshList();
                 }
             });
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            ModalService.ShowErrorModal("Could not delete the event!", getContext());
         }
 
     }

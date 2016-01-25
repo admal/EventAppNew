@@ -1,5 +1,6 @@
 package com.lab.eventapp.Dialogs;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,8 @@ import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.AddEventActivity;
 import com.lab.eventapp.ListAdapters.ChooseFriendsListAdapter;
 import com.lab.eventapp.R;
+import com.lab.eventapp.Services.ModalService;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -103,27 +106,44 @@ public class ChooseFriendsDialog extends DialogFragment
 
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
         query.whereEqualTo("username", username);
-        try {
-            ParseUser user =query.getFirst();
 
-            if (user.getUsername() == ParseUser.getCurrentUser().getUsername())
-            {
-                showModal("You are already added to this event!");
-                return;
-            }
-            if (friends.contains(user))
-            {
-                showModal("You have already added this user!");
-                return;
-            }
-            friends.add(user);
-            adapter.notifyDataSetChanged();
+            final ProgressDialog dlg = new ProgressDialog(getContext());
+            dlg.setTitle("Please wait.");
+            dlg.setCancelable(false);
+            dlg.setMessage("Removing event.  Please wait.");
+            dlg.show();
 
-            Log.d("parse", "Added");
+            //ParseUser user;
+             query.getFirstInBackground(new GetCallback<ParseUser>() {
+                 @Override
+                 public void done(ParseUser object, ParseException e) {
+                     if (e != null) {
+                         ModalService.ShowErrorModal("Error occured!", getActivity());
+                         dlg.dismiss();
+                         return;
+                     } else {
+                         ParseUser user = object;
+                         dlg.dismiss();
+                         if (user.getUsername() == ParseUser.getCurrentUser().getUsername()) {
+                             showModal("You are already added to this event!");
+                             return;
+                         }
+                         if (friends.contains(user)) {
+                             showModal("You have already added this user!");
+                             return;
+                         }
+                         friends.add(user);
+                         adapter.notifyDataSetChanged();
+                     }
+                 }
+             });
 
-        } catch (ParseException e) {
-            showModal("There is no such a user!");
-        }
+//
+//            Log.d("parse", "Added");
+//
+//        } catch (ParseException e) {
+//            showModal("There is no such a user!");
+
     }
 
     /**
