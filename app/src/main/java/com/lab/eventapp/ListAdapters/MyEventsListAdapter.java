@@ -24,12 +24,21 @@ import models.ParseEvent;
 
 /**
  * Created by Adam on 2015-11-24.
+ * Manages showing list of created by user events. It allows to open edit form and deleting the event.
  */
 public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
 {
-
+    /**
+     * Current context
+     */
     private final Context context;
+    /**
+     * List of created events.
+     */
     private final List<ParseEvent> events;
+    /**
+     * Instance of activity that implements @class(IRefreshable) interface.
+     */
     private IRefreshable refreshableActivity;
 
     public MyEventsListAdapter(Context context, List<ParseEvent> events, IRefreshable refreshableActivity) {
@@ -101,6 +110,11 @@ public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
         }
         return v;
     }
+
+    /**
+     * Delete event.
+     * @param view
+     */
     public void CancelEvent(final View view)
     {
         int id = (int)view.getTag();

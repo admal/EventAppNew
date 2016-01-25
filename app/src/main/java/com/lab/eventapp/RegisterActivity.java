@@ -17,6 +17,9 @@ import com.parse.SignUpCallback;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Activity shows register form.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     @Override
@@ -38,7 +41,10 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText tbRepeatPasswd;
     private TextView lblErrors;
 
-
+    /**
+     * Creates new user in application
+     * @param view
+     */
     public void RegisterUser(View view)
     {
         if(ValidateInput())
@@ -74,6 +80,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates input and shows proper error messages.
+     * @return true if input is proper, false otherwise
+     */
     private boolean ValidateInput()
     {
         boolean isCorrect = true;

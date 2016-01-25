@@ -25,10 +25,18 @@ import models.ParseEvent;
 
 /**
  * Created by Adam on 2015-11-24.
+ * List adapter to show events that user is invited to (if user created the event he is considered to be invited also).
+ * If user is also creator he can not switch button that he will not come. He can only delete whole event.
  */
 public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
 {
+    /**
+     * Current context
+     */
     private final Context context;
+    /**
+     * List of events that user is invited to
+     */
     private final List<ParseEvent> events;
 
     public UsersEventsListAdapter(Context context, List<ParseEvent> events) {

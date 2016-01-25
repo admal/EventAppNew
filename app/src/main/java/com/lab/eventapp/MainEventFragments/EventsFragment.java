@@ -22,12 +22,7 @@ import models.ParseEvent;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EventsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EventsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Activity shows all events that user is invited to.
  */
 public class EventsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;

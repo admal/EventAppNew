@@ -49,9 +49,17 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
      * Start date of the event.
      */
     LocalDate startDate;
+    /**
+     * End date of the event.
+     */
     LocalDate endDate;
-
+    /**
+     * Start time of the event.
+     */
     LocalTime startTime;
+    /**
+     * End time of the event.
+     */
     LocalTime endTime;
 
     /**
@@ -219,6 +227,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         });
     }
 
+    /**
+     * Validate input. Only description can be empty. Start date can not be after end date.
+     * Method shows proper error message.
+     * @return true if input is proper, false otherwise
+     */
     public boolean ValidateForm()
     {
         String errorMsg = "";
@@ -250,6 +263,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         }
     }
 
+    /**
+     * Button click event handler. Whether New event is created or event is edited it starts proper
+     * method.
+     * @param view
+     */
     public void SaveEventClick(View view)
     {
         if(!ValidateForm())//there were errors
@@ -267,6 +285,9 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         }
     }
 
+    /**
+     * Edits loaded event and saves changes.
+     */
     private void EditEvent() {
         LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
         LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
@@ -346,12 +367,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         newEvent.setPlace(tbPlace.getText().toString());
         newEvent.setOwner(ParseUser.getCurrentUser());
 
-//        ParseRelation<ParseUser> relation = newEvent.getRelation("users");
-//        for (ParseUser user :
-//                addedUsers) {
-//            relation.add(user);
-//        }
-
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
         dlg.setTitle("Please wait.");
         dlg.setMessage("Creating event.  Please wait.");
@@ -363,8 +378,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                 AppUser user = new AppUser(ParseUser.getCurrentUser());
 
                 try {
-                    //user.AddEvent(newEvent); //add currentUser to the event
-                    //to every user the event is added
                     for (ParseUser friend :
                             addedUsers) {
                         ParseUsersEvent usersEvent = new ParseUsersEvent();
@@ -414,6 +427,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Gets data from date picker and assigns it to proper date.
+     * @param date date to be assigned
+     * @param start indicates which date we edits
+     */
     public void getDateFromDialog(LocalDate date, boolean start)
     {
         if(start) {
@@ -426,6 +444,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         }
 
     }
+    /**
+     * Gets data from time picker and assigns it to proper time.
+     * @param time time to be assigned
+     * @param start indicates which time we edits
+     */
     public void getTimeFromDialog(LocalTime time, boolean start)
     {
         //TextView startTime = (TextView) findViewById(R.id.tbTimeStart);
@@ -439,6 +462,10 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         }
     }
 
+    /**
+     * Adds chosen users to the list.
+     * @param users
+     */
     @Override
     public void AddUsers(List<ParseUser> users)
     {

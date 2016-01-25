@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by Adam on 2016-01-20.
+ * Custom user of the application.
  */
 public class AppUser {
     /**

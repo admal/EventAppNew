@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Created by Adam on 2016-01-19.
+ * Parse event subclass, representing Event object in the database.
  */
 @ParseClassName("Event")
 public class ParseEvent extends ParseObject
@@ -93,16 +94,11 @@ public class ParseEvent extends ParseObject
     {
         put("owner", user);
     }
-//    public void addUserToEvent(ParseUser user) throws ParseException {
-//        ParseRelation<ParseObject> relation = getRelation("users");
-//        relation.add(user);
-//        save();
-//    }
+
     public void setPlace(String place)
     {
         put("place", place);
     }
-
 
     /**
      * Remove user from the event.
