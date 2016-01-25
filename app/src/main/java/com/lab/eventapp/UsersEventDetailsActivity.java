@@ -27,10 +27,14 @@ import Validator.StringValidator;
 import models.AppUser;
 import models.ParseEvent;
 
-
+/**
+ * Shows details of the event (all credentials, users, chat)
+ */
 public class UsersEventDetailsActivity extends AppCompatActivity implements IUserAddable
 {
-
+    /**
+     * Loaded event.
+     */
     ParseEvent event;
 
     private EditText tbTitle;
@@ -43,9 +47,17 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
     private EditText tbDesc;
     private Button btnAddUser;
 
+    /**
+     * List view of invited users
+     */
     private ListView listUsers;
-
+    /**
+     * Users invited to the event.
+     */
     private List<ParseUser> users;
+    /**
+     * Indicates user's priviliges.
+     */
     private boolean isAdmin = false;
 
 

@@ -2,6 +2,7 @@ package Validator;
 
 /**
  * Created by Adam on 2016-01-25.
+ * Validates string input.
  */
 public class StringValidator
 {

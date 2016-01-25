@@ -26,9 +26,13 @@ import java.util.List;
 
 /**
  * Created by Adam on 2015-11-28.
+ * Dialog box for finding users.
  */
 public class ChooseFriendsDialog extends DialogFragment
 {
+    /**
+     * list of added users
+     */
     private List<ParseUser> friends;
 
     private Button btnSave;
@@ -36,7 +40,9 @@ public class ChooseFriendsDialog extends DialogFragment
     private ListView usersList;
     private Button btnAddUser;
     private EditText tbUser;
-
+    /**
+     * Indicates whether user has admin priviliges. Admin priviliges allows user to delete users from the list.
+     */
     private boolean isAdmin = false;
     private ChooseFriendsListAdapter adapter;
 
@@ -88,6 +94,9 @@ public class ChooseFriendsDialog extends DialogFragment
         return v;
     }
 
+    /**
+     * Button click handler. Validates added user and shows proper notyfication about it.
+     */
     public void AddUserClick()
     {
         String username = tbUser.getText().toString();
@@ -117,6 +126,10 @@ public class ChooseFriendsDialog extends DialogFragment
         }
     }
 
+    /**
+     * Show error modal.
+     * @param errorMsg error message to be displayed.
+     */
     public void showModal(String errorMsg)
     {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
@@ -127,6 +140,9 @@ public class ChooseFriendsDialog extends DialogFragment
         dialog.create().show();
     }
 
+    /**
+     * Sends list of added user to activity that implements @class(IUserAddable) interface.
+     */
     public void SaveUsers()
     {
         IUserAddable activity = (IUserAddable)getActivity();

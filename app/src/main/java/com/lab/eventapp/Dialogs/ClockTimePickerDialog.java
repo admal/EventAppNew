@@ -16,10 +16,14 @@ import org.joda.time.LocalTime;
 
 /**
  * Created by Adam on 2015-11-28.
+ * Dialog box to choose time.
  */
 public class ClockTimePickerDialog extends DialogFragment
 {
     private TimePicker clockPicker;
+    /**
+     * Indicates if we change start or end time of the event.
+     */
     private boolean start;
 
 

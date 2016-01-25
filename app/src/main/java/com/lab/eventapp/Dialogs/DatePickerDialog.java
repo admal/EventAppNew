@@ -19,10 +19,14 @@ import java.util.GregorianCalendar;
 
 /**
  * Created by Adam on 2015-11-28.
+ * Dialog box to manage dates.
  */
 public class DatePickerDialog extends DialogFragment
 {
     private DatePicker datePicker;
+    /**
+     * Indicates if we change start or end date of the event.
+     */
     private boolean start = true;
     public DatePickerDialog(){
 

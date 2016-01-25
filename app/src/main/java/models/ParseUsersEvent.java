@@ -7,6 +7,7 @@ import com.parse.ParseUser;
 
 /**
  * Created by Adam on 2016-01-23.
+ * Parse subclass of UsersEvent.
  */
 @ParseClassName("UsersEvent")
 public class ParseUsersEvent extends ParseObject {

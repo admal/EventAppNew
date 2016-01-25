@@ -15,12 +15,18 @@ import java.util.List;
 
 /**
  * Created by Adam on 2015-11-28.
+ * Manages showing items in the list of added users.
  */
 public class ChooseFriendsListAdapter extends ArrayAdapter<ParseUser>
 {
     private final Context context;
+    /**
+     * List of added users.
+     */
     private final List<ParseUser> users;
-
+    /**
+     * Indicates if user has admin priviliges. Admin allows user to delete users from the list.
+     */
     private boolean isAdmin = false;
 
     public ChooseFriendsListAdapter(Context context, List<ParseUser> users, boolean isAdmin) {

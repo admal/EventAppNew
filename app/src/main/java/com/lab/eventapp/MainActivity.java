@@ -23,50 +23,24 @@ import android.view.View;
 
 import com.lab.eventapp.MainEventFragments.EventsFragment;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
-import com.lab.eventapp.MainEventFragments.NotyficationsFragment;
 
 import com.parse.FindCallback;
-import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import models.ParseEvent;
 import models.ParseMessage;
 
+/**
+ * Main activity of the application. Fragments show all upcoming events and created by user events.
+ */
 public class MainActivity extends AppCompatActivity {
-
-////temporary staff
-//
-//    // URL to get contacts JSON
-//    private static String url = "http://api.androidhive.info/contacts/";
-//
-//    // JSON Node names
-//    private static final String TAG_CONTACTS = "contacts";
-//    private static final String TAG_ID = "id";
-//    private static final String TAG_NAME = "name";
-//    private static final String TAG_EMAIL = "email";
-//    private static final String TAG_ADDRESS = "address";
-//    private static final String TAG_GENDER = "gender";
-//    private static final String TAG_PHONE = "phone";
-//    private static final String TAG_PHONE_MOBILE = "mobile";
-//    private static final String TAG_PHONE_HOME = "home";
-//    private static final String TAG_PHONE_OFFICE = "office";
-//    /////////
-
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -145,17 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-        //TEMPORARY SECTION (just template for further coding)
-        ParseUser currUser = ParseUser.getCurrentUser();
-        ParsePush.subscribeInBackground(currUser.getUsername());
-        //Log.d("parse", "Inherited: " + currUser.getUsername() + "Email: " + currUser.getEmail());
-
-        final ParseMessage message = new ParseMessage();
-        message.setSender(currUser);
-
     }
 
     @Override
@@ -171,21 +134,13 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-
-            return true;
-        }else if(id == R.id.action_logout)
+        if(id == R.id.action_logout)
         {
             ParseUser.logOut();
             Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-
             finish();
             startActivity(intent);
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -202,18 +157,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
             Fragment f1 = EventsFragment.newInstance();
             MyEventsFragment f2 = MyEventsFragment.newInstance();
-            //NotyficationsFragment f3 = NotyficationsFragment.newInstance();
             switch (position) {
                 case 0:
                     return f1;
                 case 1:
                     return f2;
-                //case 2:
-                //    return f3;
             }
             return null;
         }
@@ -224,22 +174,6 @@ public class MainActivity extends AppCompatActivity {
             return 2;
         }
 
-
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            EventsFragment f1 = new EventsFragment();
-//            MyEventsFragment f2 = new MyEventsFragment();
-//            NotyficationsFragment f3 = new NotyficationsFragment();
-//            switch (position) {
-//                case 0:
-//                    return "SECTION 1";
-//                case 1:
-//                    return "SECTION 2";
-//                case 2:
-//                    return "SECTION 3";
-//            }
-//            return null;
-//        }
     }
 
 }

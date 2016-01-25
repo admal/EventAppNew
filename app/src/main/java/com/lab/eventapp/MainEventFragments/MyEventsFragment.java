@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.MyEventsListAdapter;
 import com.lab.eventapp.R;
@@ -23,16 +21,13 @@ import models.ParseEvent;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MyEventsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MyEventsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Activity shows all events created by user.
  */
 public class MyEventsFragment extends Fragment implements IRefreshable {
 
-    private OnFragmentInteractionListener mListener;
+    /**
+     *  List of created by user events.
+     */
     private ListView eventList;
 
     /**
@@ -74,6 +69,9 @@ public class MyEventsFragment extends Fragment implements IRefreshable {
         return v;
     }
 
+    /**
+     * Refresh and redraw list of events.
+     */
     public  void RefreshList() {
         AppUser user = new AppUser(ParseUser.getCurrentUser());
         List<ParseEvent> events = null;
@@ -91,22 +89,6 @@ public class MyEventsFragment extends Fragment implements IRefreshable {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
     }
 
 }
