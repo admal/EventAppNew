@@ -1,7 +1,12 @@
 package com.lab.eventapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -211,14 +216,14 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             Fragment f1 = EventsFragment.newInstance();
             MyEventsFragment f2 = MyEventsFragment.newInstance();
-            NotyficationsFragment f3 = NotyficationsFragment.newInstance();
+            //NotyficationsFragment f3 = NotyficationsFragment.newInstance();
             switch (position) {
                 case 0:
                     return f1;
                 case 1:
                     return f2;
-                case 2:
-                    return f3;
+                //case 2:
+                //    return f3;
             }
             return null;
         }
@@ -226,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
 //        @Override

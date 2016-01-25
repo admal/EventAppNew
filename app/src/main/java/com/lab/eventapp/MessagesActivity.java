@@ -1,7 +1,12 @@
 package com.lab.eventapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +36,7 @@ import java.util.TimerTask;
 
 import models.ParseEvent;
 import models.ParseMessage;
+import models.ParseUsersEvent;
 
 public class MessagesActivity extends AppCompatActivity {
 
@@ -41,6 +47,8 @@ public class MessagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+
+
 
         Intent intent = getIntent();
         final String eventId = intent.getStringExtra("eventId");
@@ -74,6 +82,7 @@ public class MessagesActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 final String content = input.getText().toString();
                 if(content.indexOf(":") < 0)
                 {
@@ -111,13 +120,34 @@ public class MessagesActivity extends AppCompatActivity {
                         input.setText("");
                         scrollMyListViewToBottom(adapter);
 
-                        ParsePush push = new ParsePush();
-                        push.setChannel("Giants");
-                        push.setMessage(currUser.getUsername() + " send: " + content);
-                        push.sendInBackground();
+//                        ParsePush push = new ParsePush();
+//                        push.setChannel("Giants");
+//                        push.setMessage(currUser.getUsername() + " send: " + content);
+//                        push.sendInBackground();
 
-
-
+                        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+                        query.whereEqualTo("event", event[0]);
+                        query.findInBackground(new FindCallback<ParseUsersEvent>() {
+                            public void done(List<ParseUsersEvent> usersevent, ParseException e) {
+                                if (e == null) {
+                                    for (ParseUsersEvent usrevent : usersevent) {
+                                        try {
+                                            if(usrevent.getUser().getUsername() != currUser.getUsername())
+                                            {
+                                                ParsePush push = new ParsePush();
+                                                push.setChannel(usrevent.getUser().getUsername());
+                                                push.setMessage(currUser.getUsername() + " send: " + content);
+                                                push.sendInBackground();
+                                            }
+                                        } catch (ParseException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+                                } else {
+                                    Log.d("Messages on refresh", "Error: " + e.getMessage());
+                                }
+                            }
+                        });
                     } else {
                         Toast.makeText(MessagesActivity.this, "Right something in message and rember to not use only blankspaces", Toast.LENGTH_LONG).show();
                     }
@@ -134,6 +164,7 @@ public class MessagesActivity extends AppCompatActivity {
             public void run() {
                 runOnUiThread(new Runnable() {
                     public void run() {
+
                         refreshMessages(event, adapter, currUser, messages);
                     }
                 });
@@ -175,30 +206,33 @@ public class MessagesActivity extends AppCompatActivity {
                                 lastUpdated[0] = dateInDatabase;
                             }
                         }
-                        Log.d("Last date", lastUpdated[0].toString());
-                        ParseQuery<ParseMessage> updateMesssagesQuery = ParseQuery.getQuery("Message");
-                        updateMesssagesQuery.whereGreaterThan("createdAt", lastUpdated[0]);
-                        updateMesssagesQuery.findInBackground(new FindCallback<ParseMessage>() {
-                            public void done(List<ParseMessage> messages, ParseException e) {
-                                if (e == null) {
-                                    Log.d("Message on refresh", "Retrieved " + messages.size() + " scores");
-                                    for (ParseMessage message : messages) {
-                                        try {
-                                            if (message.getSenderUsername() == currUser.getUsername()) {
-                                                adapter.add("You: " + message.getContent());
-                                            } else {
-                                                adapter.add(message.getSenderUsername() + ": " + message.getContent());
+                        if(lastUpdated[0] != null)
+                        {
+                            Log.d("Last date", lastUpdated[0].toString());
+                            ParseQuery<ParseMessage> updateMesssagesQuery = ParseQuery.getQuery("Message");
+                            updateMesssagesQuery.whereGreaterThan("createdAt", lastUpdated[0]);
+                            updateMesssagesQuery.findInBackground(new FindCallback<ParseMessage>() {
+                                public void done(List<ParseMessage> messages, ParseException e) {
+                                    if (e == null) {
+                                        Log.d("Message on refresh", "Retrieved " + messages.size() + " scores");
+                                        for (ParseMessage message : messages) {
+                                            try {
+                                                if (message.getSenderUsername() == currUser.getUsername()) {
+                                                    adapter.add("You: " + message.getContent());
+                                                } else {
+                                                    adapter.add(message.getSenderUsername() + ": " + message.getContent());
+                                                }
+                                                scrollMyListViewToBottom(adapter);
+                                            } catch (ParseException e1) {
+                                                e1.printStackTrace();
                                             }
-                                            scrollMyListViewToBottom(adapter);
-                                        } catch (ParseException e1) {
-                                            e1.printStackTrace();
                                         }
+                                    } else {
+                                        Log.d("Messages on updt", "Error: " + e.getMessage());
                                     }
-                                } else {
-                                    Log.d("Messages on updt", "Error: " + e.getMessage());
                                 }
-                            }
-                        });
+                            });
+                        }
                     } else {
                         Log.d("Messages on update", "Error: " + e.getMessage());
                     }
@@ -253,4 +287,30 @@ public class MessagesActivity extends AppCompatActivity {
         }
         finish();
     }
+
+//    public void checkConnection()
+//    {
+//        ConnectivityManager cm =
+//                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//        boolean isConnected = activeNetwork != null &&
+//                activeNetwork.isConnectedOrConnecting();
+//
+//        if(!isConnected)
+//        {
+//            AlertDialog.Builder builder1=new AlertDialog.Builder(MessagesActivity.this);
+//
+//            builder1.setMessage("There is no internet connection. Please fix the problem and reload application.");
+//            builder1.setNeutralButton("OK",new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    android.os.Process.killProcess(android.os.Process.myPid());
+//                    System.exit(0);
+//                }
+//            });
+//
+//            builder1.show();
+//        }
+//    }
 }
