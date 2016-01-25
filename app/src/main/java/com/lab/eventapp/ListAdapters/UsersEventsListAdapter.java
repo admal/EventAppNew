@@ -58,6 +58,10 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
             TextView dateTb = (TextView) v.findViewById(R.id.lblDate);
             if(titleTb != null && isGoingSwitch != null && dateTb != null)
             {
+                if(event.getEndDate().isBefore(new LocalDateTime()))
+                {
+
+                }
                 titleTb.setText(event.getTitle());
 
                 LocalDateTime d = event.getStartDate();
@@ -85,6 +89,7 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                                         try {
                                             event.removeUser(ParseUser.getCurrentUser());
                                             events.remove(event);
+                                            notifyDataSetChanged();
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }

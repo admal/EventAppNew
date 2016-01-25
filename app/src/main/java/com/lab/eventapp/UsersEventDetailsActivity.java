@@ -16,6 +16,7 @@ import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.ListAdapters.ChooseFriendsListAdapter;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.joda.time.LocalDateTime;
@@ -53,16 +54,19 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_event_details);
         Intent intent = getIntent();
-        //int eventId = intent.getIntExtra("eventid", -1) + 1; //we give here index in table but ids start from 1
         final String eventId = intent.getStringExtra("eventid");
 
         AppUser user = new AppUser(ParseUser.getCurrentUser());
         try {
-            event = user.getUserEventById(eventId);
-            //isAdmin = event.getOwner().getUsername() == ParseUser.getCurrentUser().getUsername();
-
+            ParseQuery<ParseEvent> query  = ParseQuery.getQuery("Event");
+             event = query.get(eventId);
         } catch (Exception e) {
-            e.printStackTrace();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("Error occured!");
+            dialog.setTitle("Error!");
+            dialog.setPositiveButton("OK", null);
+            dialog.setCancelable(true);
+            dialog.create().show();
         }
 
         tbTitle = (EditText)findViewById(R.id.tbTitle);
@@ -117,14 +121,14 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
             });
         }
 
-            tbTitle.setEnabled(isAdmin);
-            tbPlace.setEnabled(isAdmin);
-            tbStartDate.setEnabled(isAdmin);
-            tbStartTime.setEnabled(isAdmin);
-            tbEndDate.setEnabled(isAdmin);
-            tbEndTime.setEnabled(isAdmin);
-            tbDesc.setEnabled(isAdmin);
-        }
+        tbTitle.setEnabled(isAdmin);
+        tbPlace.setEnabled(isAdmin);
+        tbStartDate.setEnabled(isAdmin);
+        tbStartTime.setEnabled(isAdmin);
+        tbEndDate.setEnabled(isAdmin);
+        tbEndTime.setEnabled(isAdmin);
+        tbDesc.setEnabled(isAdmin);
+    }
 
 
 
@@ -151,6 +155,10 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Overrides user list with the new list of added users.
+     * @param users
+     */
     @Override
     public void AddUsers(List<ParseUser> users) {
         this.users = users;

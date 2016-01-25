@@ -15,6 +15,7 @@ import com.lab.eventapp.R;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import models.AppUser;
@@ -70,8 +71,6 @@ public class MyEventsFragment extends Fragment implements IRefreshable {
 
         eventList = (ListView)v.findViewById(R.id.listEvents);
         RefreshList();
-
-
         return v;
     }
 
@@ -81,25 +80,11 @@ public class MyEventsFragment extends Fragment implements IRefreshable {
         try {
             events = user.getCreatedEvents();
         } catch (ParseException e) {
-            e.printStackTrace();
+            events = new ArrayList<>();
         }
-        if(events == null) {
-            TextView noEventsTextBox = new TextView(getContext());
-            noEventsTextBox.setText( "You have not any upcoming events! Add friends to keep in touch with them. ;)");
-        }
-        else {
-            MyEventsListAdapter eventAdapter = new MyEventsListAdapter(getContext(), events, this);
-            eventList.setAdapter(eventAdapter);
-        }
-        Toast t = Toast.makeText(getContext(),"List refreshed", Toast.LENGTH_SHORT);
-        t.show();
-    }
 
-    // TODO: Rename method, update argument and hook method into UI users
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        MyEventsListAdapter eventAdapter = new MyEventsListAdapter(getContext(), events, this);
+        eventList.setAdapter(eventAdapter);
     }
 
 

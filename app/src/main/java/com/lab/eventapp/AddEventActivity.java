@@ -37,15 +37,26 @@ import models.ParseUsersEvent;
 
 public class AddEventActivity extends AppCompatActivity implements IUserAddable
 {
+    /**
+     * Loaded event to edit. If it is null then it means that new event is created.
+     */
     ParseEvent loadedEvent = null;
-
+    /**
+     * Manger to create and show dialog boxes.
+     */
     FragmentManager fm = getSupportFragmentManager();
+    /**
+     * Start date of the event.
+     */
     LocalDate startDate;
     LocalDate endDate;
 
     LocalTime startTime;
     LocalTime endTime;
 
+    /**
+     * List of added users to the event.
+     */
     private List<ParseUser> addedUsers;
 
     private  TextView tbStartDate ;
@@ -301,6 +312,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                             push.sendInBackground();
                         }
                     }
+
                     for (ParseUser friend : oldUsers) {
                         if (!addedUsers.contains(friend)) {
                             Log.d("parseError", friend.getObjectId() + " , " + loadedEvent.getObjectId() );
@@ -334,11 +346,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         newEvent.setPlace(tbPlace.getText().toString());
         newEvent.setOwner(ParseUser.getCurrentUser());
 
-        ParseRelation<ParseUser> relation = newEvent.getRelation("users");
-        for (ParseUser user :
-                addedUsers) {
-            relation.add(user);
-        }
+//        ParseRelation<ParseUser> relation = newEvent.getRelation("users");
+//        for (ParseUser user :
+//                addedUsers) {
+//            relation.add(user);
+//        }
 
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
         dlg.setTitle("Please wait.");
@@ -351,7 +363,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                 AppUser user = new AppUser(ParseUser.getCurrentUser());
 
                 try {
-                    user.AddEvent(newEvent); //add currentUser to the event
+                    //user.AddEvent(newEvent); //add currentUser to the event
                     //to every user the event is added
                     for (ParseUser friend :
                             addedUsers) {

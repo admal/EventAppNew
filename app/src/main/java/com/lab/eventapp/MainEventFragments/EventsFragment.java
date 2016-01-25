@@ -32,6 +32,9 @@ import models.ParseEvent;
 public class EventsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * List of events that user is invited to.
+     */
     private ListView eventList;
 
     /**
@@ -54,8 +57,6 @@ public class EventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Toast t = Toast.makeText(getContext(),"On back", Toast.LENGTH_SHORT);
-        t.show();
         RefreshEvents();
     }
 
@@ -96,14 +97,6 @@ public class EventsFragment extends Fragment {
             eventList.setAdapter(eventAdapter);
         }
     }
-
-    // TODO: Rename method, update argument and hook method into UI users
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
 
     @Override
     public void onDetach() {
