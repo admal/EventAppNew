@@ -125,7 +125,7 @@ public class UsersEventDetailsActivity extends AppCompatActivity implements IUse
             tbEndTime.setEnabled(isAdmin);
             tbDesc.setEnabled(isAdmin);
         }
-    }
+
 
 
 

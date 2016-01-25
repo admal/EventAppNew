@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
         //TEMPORARY SECTION (just template for further coding)
         ParseUser currUser = ParseUser.getCurrentUser();
-        Log.d("parse", "Inherited: " + currUser.getUsername() + "Email: " + currUser.getEmail());
+        ParsePush.subscribeInBackground(currUser.getUsername());
+        //Log.d("parse", "Inherited: " + currUser.getUsername() + "Email: " + currUser.getEmail());
 
         final ParseMessage message = new ParseMessage();
         message.setSender(currUser);
@@ -145,30 +146,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-//        ParseQuery<ParseEvent> q2 = ParseQuery.getQuery("Message");
-//        q2.getInBackground( new GetCallback<ParseEvent>() {
-//            @Override
-//            public void done(ParseEvent object, ParseException e) {
-//                if (e == null) {
-//                    try {
-//                        ParseObject user = object.getOwner();
-//
-//                        message.setEvent(object);
-//                        message.setContent("Testing sending message to parse.");
-//                        message.saveInBackground();
-//
-//                        Log.d("parse", "Event title: " + object.getTitle());
-//                        Log.d("parse", "owner: " + user.getString("username"));
-//                    } catch (ParseException e1) {
-//                        Log.d("parse", e.getMessage());
-//                    }
-//                } else
-//                    Log.d("parse", "again nothing :/");
-//
-//            }
-//        });
-
         ParseQuery<ParseMessage> query = ParseQuery.getQuery("Message");
         query.whereEqualTo("sender", currUser);
         query.findInBackground(new FindCallback<ParseMessage>() {
@@ -184,36 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-//        public void addUserToEvent(ParseUser user) throws ParseException
-//        {
-//            ParseRelation<ParseObject> relation = getRelation("users");
-//            relation.add(user);
-//            save();
-//        }
-
-
-
-//        ParseQuery<ParseMessage> messageQuery = ParseQuery.getQuery("Message");
-//        messageQuery.
-
-
-//        ParseObject event = new ParseObject("Event");
-//        event.put("title", "From android");
-//        event.put("endDate", new Date());
-//        event.put("startDate", new Date());
-//        event.put("owner", currUser);
-//        try {
-//            event.save();
-//        } catch (ParseException e) {
-//            Log.d("parse",e.getMessage());
-//        }
-        //END
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

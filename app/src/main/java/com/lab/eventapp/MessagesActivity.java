@@ -117,6 +117,7 @@ public class MessagesActivity extends AppCompatActivity {
                         push.sendInBackground();
 
 
+
                     } else {
                         Toast.makeText(MessagesActivity.this, "Right something in message and rember to not use only blankspaces", Toast.LENGTH_LONG).show();
                     }

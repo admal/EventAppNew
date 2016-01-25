@@ -269,6 +269,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         for (ParseUser user :
                 addedUsers) {
             relation.add(user);
+
         }
 
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
