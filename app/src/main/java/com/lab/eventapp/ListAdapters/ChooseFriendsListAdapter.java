@@ -13,6 +13,7 @@ import com.lab.eventapp.R;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import models.User;
 
@@ -22,13 +23,15 @@ import models.User;
 public class ChooseFriendsListAdapter extends ArrayAdapter<ParseUser>
 {
     private final Context context;
-    private final ArrayList<ParseUser> users;
+    private final List<ParseUser> users;
 
+    private boolean isAdmin = false;
 
-    public ChooseFriendsListAdapter(Context context, ArrayList<ParseUser> users) {
+    public ChooseFriendsListAdapter(Context context, List<ParseUser> users, boolean isAdmin) {
         super(context, R.layout.list_adapter_choose_myfriends, users);
         this.context = context;
         this.users = users;
+        this.isAdmin = isAdmin;
     }
 
     @Override
@@ -37,8 +40,6 @@ public class ChooseFriendsListAdapter extends ArrayAdapter<ParseUser>
         final int idx= position; //index in the table of users
         View v = convertView;
         final ParseUser user = users.get(idx);
-
-
 
         if (v == null)
         {
@@ -52,8 +53,14 @@ public class ChooseFriendsListAdapter extends ArrayAdapter<ParseUser>
                 @Override
                 public void onClick(View v) {
                     users.remove(idx);
+                    notifyDataSetChanged();
                 }
             });
+
+            if(!isAdmin)
+            {
+                btnRemove.setVisibility(View.INVISIBLE);
+            }
 
         }
         if(idx < users.size())

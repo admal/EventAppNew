@@ -19,6 +19,7 @@
     </style>
     <style name="AppTheme.LabelAddEventStyle">
         <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="android:paddingRight">10dp</item>
     </style>
     <style name="AppTheme.ButtonAddEventStyle">
         <item name="android:background">@color/colorPrimary</item>

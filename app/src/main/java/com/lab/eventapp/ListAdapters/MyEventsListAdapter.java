@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.lab.eventapp.AddEventActivity;
 import com.lab.eventapp.MainEventFragments.IRefreshable;
 import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 import com.lab.eventapp.R;
@@ -42,7 +44,7 @@ public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
     {
         int idx= position; //index in the table of events
         View v = convertView;
-        ParseEvent event = events.get(idx);
+        final ParseEvent event = events.get(idx);
 
         if (v == null)
         {
@@ -76,10 +78,19 @@ public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
                             }
                         }
                     };
-
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show();
+                }
+            });
+
+            View btnEdit = v.findViewById(R.id.btnEdit);
+            btnEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), AddEventActivity.class);
+                    intent.putExtra("eventId", event.getObjectId());
+                    context.startActivity(intent);
                 }
             });
 
@@ -107,5 +118,4 @@ public class MyEventsListAdapter extends ArrayAdapter<ParseEvent>
             }
         });
     }
-    
 }

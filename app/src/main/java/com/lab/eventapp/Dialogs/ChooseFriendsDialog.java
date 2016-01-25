@@ -1,6 +1,5 @@
 package com.lab.eventapp.Dialogs;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -12,18 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.AddEventActivity;
 import com.lab.eventapp.ListAdapters.ChooseFriendsListAdapter;
 import com.lab.eventapp.R;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Data.Repositories.UsersRepository;
-import models.User;
 
 
 /**
@@ -31,7 +30,7 @@ import models.User;
  */
 public class ChooseFriendsDialog extends DialogFragment
 {
-    private ArrayList<ParseUser> friends;
+    private List<ParseUser> friends;
 
     private Button btnSave;
     private Button btnCancel;
@@ -39,15 +38,23 @@ public class ChooseFriendsDialog extends DialogFragment
     private Button btnAddUser;
     private EditText tbUser;
 
+    private boolean isAdmin = false;
+    private ChooseFriendsListAdapter adapter;
+
     public ChooseFriendsDialog()
     {
-        friends = new ArrayList<>();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        isAdmin = getArguments().getBoolean("isAdmin");
+
         View v = inflater.inflate(R.layout.dialog_choose_friends, container);
+
+        AddEventActivity activity = (AddEventActivity) getActivity();
+        friends = activity.getAddedUsers();
 
         btnSave = (Button)v.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +82,9 @@ public class ChooseFriendsDialog extends DialogFragment
 
         tbUser = (EditText)v.findViewById(R.id.tbUsername);
         usersList = (ListView)v.findViewById(R.id.listViewFriends);
-        usersList.setAdapter(new ChooseFriendsListAdapter(getContext(), friends));
+        adapter = new ChooseFriendsListAdapter(getContext(), friends, isAdmin);
+        adapter.notifyDataSetChanged();
+        usersList.setAdapter(adapter);
 
         return v;
     }
@@ -89,28 +98,41 @@ public class ChooseFriendsDialog extends DialogFragment
         query.whereEqualTo("username", username);
         try {
             ParseUser user =query.getFirst();
-            if (user == null)
+
+            if (user.getUsername() == ParseUser.getCurrentUser().getUsername())
             {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-                    dialog.setMessage("There is no such a user!");
-                    dialog.setTitle("Error!");
-                    dialog.setPositiveButton("OK", null);
-                    dialog.setCancelable(true);
-                    dialog.create().show();
+                showModal("You are already added to this event!");
+                return;
             }
-            else
+            if (friends.contains(user))
             {
-                friends.add(user);
-                Log.d("parse", "Added");
+                showModal("You have already added this user!");
+                return;
             }
+            friends.add(user);
+            adapter.notifyDataSetChanged();
+
+            Log.d("parse", "Added");
+
         } catch (ParseException e) {
-            e.printStackTrace();
+            showModal("There is no such a user!");
         }
     }
+
+    public void showModal(String errorMsg)
+    {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setMessage(errorMsg);
+        dialog.setTitle("Error!");
+        dialog.setPositiveButton("OK", null);
+        dialog.setCancelable(true);
+        dialog.create().show();
+    }
+
     public void SaveUsers()
     {
-        AddEventActivity activity = (AddEventActivity)getActivity();
-        activity.addUsers(friends);
+        IUserAddable activity = (IUserAddable)getActivity();
+        activity.AddUsers(friends);
         getDialog().dismiss();
     }
 }

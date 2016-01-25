@@ -1,85 +1,121 @@
 package com.lab.eventapp;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
-import com.lab.eventapp.CustomEventListeners.MyOnCheckedChangeListener;
+import com.lab.eventapp.ActivityInterfaces.IUserAddable;
+import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
+import com.lab.eventapp.ListAdapters.ChooseFriendsListAdapter;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.joda.time.LocalDateTime;
 
+import java.util.List;
+
+import Validator.StringValidator;
 import models.AppUser;
 import models.ParseEvent;
-import models.UsersEvents;
 
-public class UsersEventDetailsActivity extends AppCompatActivity {
+
+public class UsersEventDetailsActivity extends AppCompatActivity implements IUserAddable
+{
 
     ParseEvent event;
+
+    private EditText tbTitle;
+    private EditText tbOrganizer;
+    private EditText tbPlace;
+    private EditText tbStartDate;
+    private EditText tbStartTime;
+    private EditText tbEndDate;
+    private EditText tbEndTime;
+    private EditText tbDesc;
+    private Button btnAddUser;
+
+    private ListView listUsers;
+
+    private List<ParseUser> users;
+    private boolean isAdmin = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_event_details);
         Intent intent = getIntent();
-        //int eventId = intent.getIntExtra("eventid", -1) + 1; //we give here index in table but ids start from 1
         String eventId = intent.getStringExtra("eventid");
-
-       // EventsRepository eventRepo = Singleton.getInstance().getEventRepo();
 
         AppUser user = new AppUser(ParseUser.getCurrentUser());
         try {
             event = user.getUserEventById(eventId);
+            //isAdmin = event.getOwner().getUsername() == ParseUser.getCurrentUser().getUsername();
+
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        tbTitle = (EditText)findViewById(R.id.tbTitle);
+        tbOrganizer = (EditText)findViewById(R.id.tbOrganizer);
+        tbPlace = (EditText)findViewById(R.id.tbPlace);
+        tbStartDate = (EditText)findViewById(R.id.tbStartDate);
+        tbStartTime = (EditText)findViewById(R.id.tbStartTime);
+        tbEndDate = (EditText)findViewById(R.id.tbEndDate);
+        tbEndTime = (EditText)findViewById(R.id.tbEndTime);
+        tbDesc = (EditText)findViewById(R.id.tbDesc);
+
+
+        listUsers = (ListView)findViewById(R.id.listUsers);
+
+        try {
+            users = event.getUsers();
+            listUsers.setAdapter(new ChooseFriendsListAdapter(getBaseContext(), users, isAdmin));
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
         if(event != null)
         {
-            TextView title = (TextView)findViewById(R.id.lblEventTitle);
-            TextView place = (TextView)findViewById(R.id.lblPlace);
-            TextView start = (TextView)findViewById(R.id.lblStart);
-            TextView end = (TextView)findViewById(R.id.lblEnd);
-            TextView creator = (TextView)findViewById(R.id.lblCreator);
-            TextView desc = (TextView)findViewById(R.id.lblDesc);
+            tbTitle.setText(event.getTitle());
+            tbPlace.setText(event.getPlace());
+            tbDesc.setText(event.getDescription());
 
-            title.setText(event.getTitle());
-            place.setText(event.getPlace());
-            desc.setText(event.getDescription());
+            LocalDateTime startDateTime = new LocalDateTime(event.getStartDate());
+            LocalDateTime endDateTime = new LocalDateTime(event.getEndDate());
 
-            DateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            tbStartDate.setText(startDateTime.toString("dd/MM/yyyy"));
+            tbStartTime.setText(startDateTime.toString("HH:mm"));
 
-            start.setText(f.format(event.getStartDate()));
-            if(event.getEndDate() != null) //is not set
-                end.setText(f.format(event.getEndDate()));
-            else
-            {
-                TextView endLabel = (TextView)findViewById(R.id.lblEndDateFix);
-                endLabel.setVisibility(View.INVISIBLE);
-                end.setVisibility(View.INVISIBLE);
-            }
-
-            ToggleButton btn = (ToggleButton)findViewById(R.id.btnIsGoing);
-            //btn.setChecked(userEvent.isGoing);
-            btn.setTag(eventId);
-            btn.setOnCheckedChangeListener(new MyOnCheckedChangeListener());
+            tbEndDate.setText(endDateTime.toString("dd/MM/yyyy"));
+            tbEndTime.setText(endDateTime.toString("HH:mm"));
 
             try {
-                creator.setText("Creator: " + event.getOwner().getUsername());
+                tbOrganizer.setText(event.getOwner().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        }
+            tbPlace.setText(event.getPlace());
 
+            tbTitle.setEnabled(isAdmin);
+            tbPlace.setEnabled(isAdmin);
+            tbStartDate.setEnabled(isAdmin);
+            tbStartTime.setEnabled(isAdmin);
+            tbEndDate.setEnabled(isAdmin);
+            tbEndTime.setEnabled(isAdmin);
+            tbDesc.setEnabled(isAdmin);
+        }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,5 +137,10 @@ public class UsersEventDetailsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void AddUsers(List<ParseUser> users) {
+        this.users = users;
     }
 }

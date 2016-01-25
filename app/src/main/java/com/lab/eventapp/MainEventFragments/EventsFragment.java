@@ -84,7 +84,7 @@ public class EventsFragment extends Fragment {
     /**
      * Refresh whole list of events in the fragment.
      */
-    private void RefreshEvents() {
+    public void RefreshEvents() {
         //ArrayList<UsersEvents> events = Singleton.getInstance().getCurrentUser().usersEvents;
         AppUser currUser = new AppUser(ParseUser.getCurrentUser());
         List<ParseEvent> events = null;

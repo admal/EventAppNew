@@ -1,5 +1,6 @@
 package com.lab.eventapp;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,11 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.Dialogs.ClockTimePickerDialog;
 import com.lab.eventapp.Dialogs.DatePickerDialog;
+import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -23,17 +26,17 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import Validator.StringValidator;
 import models.AppUser;
 import models.ParseEvent;
 import models.ParseUsersEvent;
-import models.UsersEvents;
 
-public class AddEventActivity extends AppCompatActivity {
+public class AddEventActivity extends AppCompatActivity implements IUserAddable
+{
+    ParseEvent loadedEvent = null;
 
     FragmentManager fm = getSupportFragmentManager();
     LocalDate startDate;
@@ -42,8 +45,7 @@ public class AddEventActivity extends AppCompatActivity {
     LocalTime startTime;
     LocalTime endTime;
 
-    private ArrayList<ParseUser> addedUsers;
-    //private ParseEvent event;
+    private List<ParseUser> addedUsers;
 
     private  TextView tbStartDate ;
     private  TextView tbEndDate;
@@ -60,11 +62,6 @@ public class AddEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        addedUsers = new ArrayList<>();
-        endDate = new LocalDate();
-        startDate = new LocalDate();
-        startTime = new LocalTime();
-        endTime = new LocalTime();
 
         tbStartDate = (TextView) findViewById(R.id.tbStartDate);
         tbEndDate = (TextView)findViewById(R.id.tbEndDate);
@@ -76,8 +73,54 @@ public class AddEventActivity extends AppCompatActivity {
         tbPlace = (TextView)findViewById(R.id.tbPlace);
         tbDesc =  (TextView)findViewById(R.id.tbDesc);
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        DateFormat timeFormat = new SimpleDateFormat("hh:mm");
+
+        addedUsers = new ArrayList<>();
+        endDate = new LocalDate();
+        startDate = new LocalDate() ;
+        startTime = new LocalTime();
+        endTime =  new LocalTime();
+
+        String eventId = getIntent().getStringExtra("eventId");
+        if(eventId != null)
+        {
+            final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
+            dlg.setTitle("Please wait.");
+            dlg.setMessage("Searching event.  Please wait.");
+            dlg.show();
+
+            ParseQuery<ParseEvent> query = ParseQuery.getQuery("Event");
+            query.getInBackground(eventId, new GetCallback<ParseEvent>() {
+                @Override
+                public void done(ParseEvent object, ParseException e) {
+                    if(e==null) {
+                        loadedEvent = object;
+
+                        tbTitle.setText(loadedEvent.getTitle());
+                        tbPlace.setText(loadedEvent.getPlace());
+                        tbDesc.setText(loadedEvent.getDescription());
+
+                        endDate = loadedEvent.getEndDate().toLocalDate();
+                        startDate = loadedEvent.getStartDate().toLocalDate();
+                        startTime = loadedEvent.getEndDate().toLocalTime();
+                        endTime =  loadedEvent.getEndDate().toLocalTime();
+
+                        btnSaveEvent.setText("SAVE EVENT");
+
+                        try {
+                            addedUsers = loadedEvent.getUsers();
+                        } catch (ParseException e1) {
+                            showErrorModal("Error occured while proceding users!");
+                        }
+                        dlg.dismiss();
+                    }
+                    else
+                    {
+                        dlg.dismiss();
+                        showErrorModal("There is no such event!");
+                    }
+                }
+            });
+        }
 
         tbStartDate.setText(startDate.toString("dd/MM/yyyy"));
         tbStartDate.setOnClickListener(new View.OnClickListener() {
@@ -132,15 +175,34 @@ public class AddEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ChooseFriendsDialog fd = new ChooseFriendsDialog();
+                Bundle args = new Bundle();
+                args.putBoolean("isAdmin", true);
+                fd.setArguments(args);
                 fd.show(fm, "FriendsPicker");
             }
         });
 
-
         btnSaveEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaveEvent(v);
+                SaveEventClick(v);
+            }
+        });
+    }
+
+    public List<ParseUser> getAddedUsers()
+    {
+        return addedUsers;
+    }
+
+    private void showErrorModal(String errorMsg)
+    {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getBaseContext());
+        builder.setMessage(errorMsg);
+        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
             }
         });
     }
@@ -148,13 +210,13 @@ public class AddEventActivity extends AppCompatActivity {
     public boolean ValidateForm()
     {
         String errorMsg = "";
-
-        errorMsg += isEmpty("Title", tbTitle.getText().toString());
-        errorMsg += isEmpty("Place", tbPlace.getText().toString());
-        errorMsg += isEmpty("Start date", tbStartDate.getText().toString());
-        errorMsg += isEmpty("End date", tbEndDate.getText().toString());
-        errorMsg += isEmpty("Start time", tbStartTime.getText().toString());
-        errorMsg += isEmpty("End time", tbEndTime.getText().toString());
+        StringValidator validator = new StringValidator();
+        errorMsg += validator.isEmpty("Title", tbTitle.getText().toString());
+        errorMsg += validator.isEmpty("Place", tbPlace.getText().toString());
+        errorMsg += validator.isEmpty("Start date", tbStartDate.getText().toString());
+        errorMsg += validator.isEmpty("End date", tbEndDate.getText().toString());
+        errorMsg += validator.isEmpty("Start time", tbStartTime.getText().toString());
+        errorMsg += validator.isEmpty("End time", tbEndTime.getText().toString());
 
         LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
         LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
@@ -175,34 +237,91 @@ public class AddEventActivity extends AppCompatActivity {
             return  false;
         }
     }
-    /**
-     * Checks whether given input is empty and returns error message as string.
-     * @param inputName Name of controlled text box
-     * @param input input to check
-     * @return proper error message
-     */
-    private String isEmpty(String inputName,String input)
-    {
-        if(input.length() == 0)
-            return inputName + " can not be empty!\n";
-        return "";
-    }
 
-    /**
-     * Gets data from the form and creates the event.
-     * @param view
-     */
-    public void SaveEvent(View view)
+    public void SaveEventClick(View view)
     {
         if(!ValidateForm())//there were errors
         {
-            Log.d("newevent", "Errors found");
+            showErrorModal("Unknown error occured!");
             return;
         }
+        if(loadedEvent != null) //editing event
+        {
+            EditEvent();
+        }
+        else //creating new one
+        {
+            CreateEvent();
+        }
+    }
+
+    private void EditEvent() {
+        LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
+        LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
+
+        loadedEvent.setStartDate(startFinalDate);
+        loadedEvent.setEndDate(endFinalDate);
+        loadedEvent.setTitle(tbTitle.getText().toString());
+        loadedEvent.setDescription(tbDesc.getText().toString());
+        loadedEvent.setPlace(tbPlace.getText().toString());
+
+        ParseRelation<ParseUser> relation = loadedEvent.getRelation("users");
+        for (ParseUser user :
+                addedUsers) {
+            relation.add(user);
+        }
+
+        final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
+        dlg.setTitle("Please wait.");
+        dlg.setMessage("Creating event.  Please wait.");
+        dlg.show();
+
+        loadedEvent.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                AppUser user = new AppUser(ParseUser.getCurrentUser());
+
+                try {
+                    List<ParseUser> oldUsers = loadedEvent.getUsers();
+
+                    //to every user the event is added
+                    for (ParseUser friend : addedUsers) {
+                        if(!oldUsers.contains(friend))
+                        {
+                            ParseUsersEvent usersEvent = new ParseUsersEvent();
+                            usersEvent.setUser(friend);
+                            usersEvent.setEvent(loadedEvent);
+                            usersEvent.save();
+                        }
+                    }
+                    for (ParseUser friend : oldUsers) {
+                        if (!addedUsers.contains(friend)) {
+                            Log.d("parseError", friend.getObjectId() + " , " + loadedEvent.getObjectId() );
+                            loadedEvent.removeUser(friend);
+                        }
+                    }
+
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                dlg.dismiss();
+                finish();
+            }
+        });
+    }
+
+
+    /**
+     * Gets data from the form and creates the event.
+     */
+    public void CreateEvent()
+    {
+        LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
+        LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
 
         final ParseEvent newEvent = new ParseEvent();
-        newEvent.setStartDate(startDate.toDate());
-        newEvent.setEndDate(endDate.toDate());
+        newEvent.setStartDate(startFinalDate);
+        newEvent.setEndDate(endFinalDate);
         newEvent.setTitle(tbTitle.getText().toString());
         newEvent.setDescription(tbDesc.getText().toString());
         newEvent.setPlace(tbPlace.getText().toString());
@@ -247,8 +366,6 @@ public class AddEventActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 
     @Override
@@ -297,7 +414,9 @@ public class AddEventActivity extends AppCompatActivity {
             tbEndTime.setText(time.toString("HH:mm"));
         }
     }
-    public void addUsers(ArrayList<ParseUser> users)
+
+    @Override
+    public void AddUsers(List<ParseUser> users)
     {
         addedUsers = users;
     }
