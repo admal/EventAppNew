@@ -23,9 +23,8 @@ public class ParseUsersEvent extends ParseObject {
         ParseEvent event = (ParseEvent) getParseObject("event").fetchIfNeeded();
         return event;
     }
-    public ParseUser getUser()
-    {
-        ParseUser user = (ParseUser) getParseObject("user");
+    public ParseUser getUser() throws ParseException {
+        ParseUser user = (ParseUser) getParseObject("user").fetchIfNeeded();
         return user;
     }
 }

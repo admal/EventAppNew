@@ -1,11 +1,14 @@
 package com.lab.eventapp.ListAdapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -13,6 +16,11 @@ import com.lab.eventapp.CustomEventListeners.MyOnCheckedChangeListener;
 import com.lab.eventapp.Parse;
 import com.lab.eventapp.R;
 import com.lab.eventapp.UsersEventDetailsActivity;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import org.joda.time.LocalDateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,19 +62,55 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
         if(idx < events.size())
         {
             TextView titleTb = (TextView) v.findViewById(R.id.lblEventTitle);
-            Switch isGoingSwitch = (Switch) v.findViewById(R.id.switchIsGoing);
+            final Switch isGoingSwitch = (Switch) v.findViewById(R.id.switchIsGoing);
             TextView dateTb = (TextView) v.findViewById(R.id.lblDate);
             if(titleTb != null && isGoingSwitch != null && dateTb != null)
             {
                 titleTb.setText(event.getTitle());
 
-                Date d = event.getStartDate();
-                DateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                dateTb.setText(f.format(d));
+                LocalDateTime d = event.getStartDate();
+                dateTb.setText(d.toString("dd/MM/yyyy HH:mm"));
 
-                isGoingSwitch.setChecked(false);
+                try {
+                    if (event.getOwner() == ParseUser.getCurrentUser())
+                    {
+                        isGoingSwitch.setEnabled(false);
+                    }
+                    isGoingSwitch.setChecked(true);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 isGoingSwitch.setTag(event.getObjectId());
-                isGoingSwitch.setOnCheckedChangeListener(new MyOnCheckedChangeListener());
+                isGoingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        dialog.dismiss();
+                                        try {
+                                            event.removeUser(ParseUser.getCurrentUser());
+                                            events.remove(event);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        isGoingSwitch.setEnabled(true);
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Are you sure you want to leave that event?").setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+                    }
+                });
             }
         }
         v.setOnClickListener(new View.OnClickListener() {

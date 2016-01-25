@@ -1,5 +1,7 @@
 package models;
 
+import android.util.Log;
+
 import com.parse.DeleteCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -8,11 +10,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.joda.time.LocalDateTime;
 
-import bolts.Task;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Adam on 2016-01-19.
@@ -33,22 +34,28 @@ public class ParseEvent extends ParseObject
     {
         return getString("description");
     }
-    public Date getStartDate()
+    public LocalDateTime getStartDate()
     {
-        return getDate("startDate");
+        return new LocalDateTime(getDate("startDate"));
     }
-    public Date getEndDate()
+    public LocalDateTime getEndDate()
     {
-        return getDate("endDate");
+        return new LocalDateTime(getDate("endDate"));
     }
+
     public List<ParseUser> getUsers() throws ParseException {
-        ParseRelation<ParseUser> relation = getRelation("users");
-        List<ParseUser> users =   relation.getQuery().find();
-//        List<ParseUser> retUsers = new ArrayList<>();
-//        for (ParseObject user :
-//                users) {
-//            retUsers.add((ParseUser)user);
-//        }
+//        ParseRelation<ParseUser> relation = getRelation("users");
+//        List<ParseUser> users =   relation.getQuery().find();
+
+        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+        query.whereEqualTo("event", this);
+        List<ParseUsersEvent> eventUsers =  query.find();
+        List<ParseUser> users = new ArrayList<>();
+        for (ParseUsersEvent u : eventUsers) {
+            Log.d("getUsers()", "User: " + u.getUser().getObjectId() + ": event: " + getObjectId());
+            if(u.getUser().getUsername() != this.getOwner().getUsername())
+                users.add(u.getUser());
+        }
         return users;
     }
     public String getPlace()
@@ -64,13 +71,13 @@ public class ParseEvent extends ParseObject
     {
         put("description", desc);
     }
-    public void setStartDate(Date date)
+    public void setStartDate(LocalDateTime date)
     {
-        put("startDate", date);
+        put("startDate", date.toDate());
     }
-    public void setEndDate(Date date)
+    public void setEndDate(LocalDateTime date)
     {
-        put("endDate", date);
+        put("endDate", date.toDate());
     }
     public void setOwner(ParseUser user)
     {
@@ -84,6 +91,24 @@ public class ParseEvent extends ParseObject
     public void setPlace(String place)
     {
         put("place", place);
+    }
+
+
+    public void removeUser(ParseUser user) throws ParseException {
+        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+        query.whereEqualTo("event", this);
+
+        List<ParseUsersEvent> usersEvents = query.find();
+
+        for (ParseUsersEvent e: usersEvents)
+        {
+            if(e.getUser().getObjectId() == user.getObjectId())
+            {
+                e.delete();
+                Log.d("RemoveUser", "finally!");
+                return;
+            }
+        }
     }
 
 }

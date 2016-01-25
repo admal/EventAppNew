@@ -1,10 +1,16 @@
 package com.lab.eventapp.CustomEventListeners;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.CompoundButton;
 
 import com.lab.eventapp.Singleton;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
+import models.ParseEvent;
+import models.ParseUsersEvent;
 import models.UsersEvents;
 
 /**
@@ -13,12 +19,6 @@ import models.UsersEvents;
 public class MyOnCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        int eventId = (int)buttonView.getTag();
-        UsersEvents event =  Singleton.getInstance().getUsersEventRepo().getEventById(eventId);
-        event.isGoing = !event.isGoing;
-//        for (UsersEvents e :
-//                Singleton.getInstance().getCurrentUser().usersEvents) {
-//            Log.d("isGoing:", e.users.getTitle() + e.isGoing);
-//        }
+
     }
 }
