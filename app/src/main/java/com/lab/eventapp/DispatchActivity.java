@@ -11,16 +11,15 @@ import android.os.Bundle;
 
 import com.parse.ParseUser;
 
-
+/**
+ * Class checking if user is logged in and managing activities accordingly
+ */
 public class DispatchActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-//        if (getIntent().getBooleanExtra("EXIT", false)) {
-//            finish();
-//        }
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -28,24 +27,24 @@ public class DispatchActivity extends Activity {
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
+        // Check if there is internet connection: If there isn't show pop up dialog and close application
         if(!isConnected)
         {
             AlertDialog.Builder builder1=new AlertDialog.Builder(DispatchActivity.this);
 
             builder1.setMessage("There is no internet connection. Please fix the problem and reload application.");
             builder1.setNeutralButton("OK",new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-//                    moveTaskToBack(true);
-//                    android.os.Process.killProcess(android.os.Process.myPid());
-//                    System.exit(1);
                     finish();
                 }
             });
 
             builder1.show();
-            //finish();
-        } else {
+        }
+        else //If there is manage activities
+        {
             // Check if there is current user info
             if (ParseUser.getCurrentUser() != null) {
                 // Start an intent for the logged in activity
@@ -55,7 +54,5 @@ public class DispatchActivity extends Activity {
                 startActivity(new Intent(this, LoginActivity.class));
             }
         }
-
-
     }
 }

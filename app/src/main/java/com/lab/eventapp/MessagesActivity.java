@@ -38,17 +38,21 @@ import models.ParseEvent;
 import models.ParseMessage;
 import models.ParseUsersEvent;
 
+/**
+ * Activity showing and managing chat for given event
+ */
 public class MessagesActivity extends AppCompatActivity {
 
     private Timer autoUpdate;
     final ArrayList<String> messages = new ArrayList<String>();
 
+    /**
+     * In onCreate program boostrap the view and download previous messages from database
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
-
-
 
         Intent intent = getIntent();
         final String eventId = intent.getStringExtra("eventId");
@@ -78,6 +82,9 @@ public class MessagesActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        /**
+         * Button for sending messages.
+         */
         Button send = (Button) findViewById(R.id.btnSendMessage);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,15 +122,8 @@ public class MessagesActivity extends AppCompatActivity {
 
                         adapter.add("You: " + content);
 
-                        //               messages.add(message);
-
                         input.setText("");
                         scrollMyListViewToBottom(adapter);
-
-//                        ParsePush push = new ParsePush();
-//                        push.setChannel("Giants");
-//                        push.setMessage(currUser.getUsername() + " send: " + content);
-//                        push.sendInBackground();
 
                         ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
                         query.whereEqualTo("event", event[0]);
@@ -158,6 +158,9 @@ public class MessagesActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Timer for updating messages
+         */
         autoUpdate = new Timer();
         autoUpdate.schedule(new TimerTask() {
             @Override
@@ -173,17 +176,16 @@ public class MessagesActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Download previous messages or download and update messages sent by other users when user look at the chat
+     */
     private void refreshMessages(ParseEvent[] evnt, ArrayAdapter<String> adapt, ParseUser usr, ArrayList<String> msgs)
     {
         final ParseEvent[] event = evnt;
         final ArrayAdapter<String> adapter = adapt;
         final ParseUser currUser = usr;
         final Date[] lastUpdated = {null};
-        //final ArrayList<String> messages = msgs;
 
-        //adapter.clear();
-        //adapter.notifyDataSetChanged();
         if(messages.size()-1 > -1)
         {
             String lastMessage = messages.get(messages.size()-1);
@@ -267,6 +269,9 @@ public class MessagesActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Helper, it scrolls ListView to last element when application update messages
+     */
     private void scrollMyListViewToBottom(ArrayAdapter<String> adapt) {
         final ListView messagesContainer = (ListView) findViewById(R.id.listMessages);
         final ArrayAdapter<String> adapter = adapt;
@@ -278,6 +283,9 @@ public class MessagesActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Overwritten onBackPressed that stops refresh timer for updating messages
+     */
     @Override
     public void onBackPressed()
     {
@@ -287,30 +295,4 @@ public class MessagesActivity extends AppCompatActivity {
         }
         finish();
     }
-
-//    public void checkConnection()
-//    {
-//        ConnectivityManager cm =
-//                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//        boolean isConnected = activeNetwork != null &&
-//                activeNetwork.isConnectedOrConnecting();
-//
-//        if(!isConnected)
-//        {
-//            AlertDialog.Builder builder1=new AlertDialog.Builder(MessagesActivity.this);
-//
-//            builder1.setMessage("There is no internet connection. Please fix the problem and reload application.");
-//            builder1.setNeutralButton("OK",new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    android.os.Process.killProcess(android.os.Process.myPid());
-//                    System.exit(0);
-//                }
-//            });
-//
-//            builder1.show();
-//        }
-//    }
 }

@@ -22,7 +22,6 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import Data.Repositories.UsersRepository;
 
 
 /**
@@ -92,7 +91,6 @@ public class ChooseFriendsDialog extends DialogFragment
     public void AddUserClick()
     {
         String username = tbUser.getText().toString();
-        UsersRepository repo = new UsersRepository();
 
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
         query.whereEqualTo("username", username);

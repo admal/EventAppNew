@@ -39,28 +39,6 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        ConnectivityManager cm =
-//                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//        boolean isConnected = activeNetwork != null &&
-//                activeNetwork.isConnectedOrConnecting();
-//
-//        if(!isConnected)
-//        {
-//            AlertDialog.Builder builder1=new AlertDialog.Builder(LoginActivity.this);
-//
-//                    builder1.setMessage("There is no internet connection. Please fix the problem and reload application.");
-//            builder1.setNeutralButton("OK",new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    android.os.Process.killProcess(android.os.Process.myPid());
-//                    System.exit(0);
-//                }
-//            });
-//
-//            builder1.show();
-//        }
 
         tbUsername = (TextView) findViewById(R.id.tbLogin);
         tbPasswd = (TextView) findViewById(R.id.tbPassword);

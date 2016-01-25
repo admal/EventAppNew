@@ -1,6 +1,5 @@
 package com.lab.eventapp.MainEventFragments;
 
-import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,17 +12,13 @@ import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.UsersEventsListAdapter;
 import com.lab.eventapp.R;
-import com.lab.eventapp.Singleton;
-import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import models.AppUser;
 import models.ParseEvent;
-import models.UsersEvents;
 
 
 /**
@@ -85,7 +80,6 @@ public class EventsFragment extends Fragment {
      * Refresh whole list of events in the fragment.
      */
     public void RefreshEvents() {
-        //ArrayList<UsersEvents> events = Singleton.getInstance().getCurrentUser().usersEvents;
         AppUser currUser = new AppUser(ParseUser.getCurrentUser());
         List<ParseEvent> events = null;
         try {

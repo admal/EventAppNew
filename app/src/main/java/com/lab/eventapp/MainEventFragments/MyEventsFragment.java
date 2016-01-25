@@ -76,7 +76,6 @@ public class MyEventsFragment extends Fragment implements IRefreshable {
     }
 
     public  void RefreshList() {
-        //ArrayList<Event> events = Singleton.getInstance().getCurrentUser().createdEvents;
         AppUser user = new AppUser(ParseUser.getCurrentUser());
         List<ParseEvent> events = null;
         try {

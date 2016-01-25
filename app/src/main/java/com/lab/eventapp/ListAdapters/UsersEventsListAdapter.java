@@ -12,24 +12,16 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.lab.eventapp.CustomEventListeners.MyOnCheckedChangeListener;
-import com.lab.eventapp.Parse;
 import com.lab.eventapp.R;
 import com.lab.eventapp.UsersEventDetailsActivity;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.joda.time.LocalDateTime;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import models.ParseEvent;
-import models.UsersEvents;
 
 /**
  * Created by Adam on 2015-11-24.

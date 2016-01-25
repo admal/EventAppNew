@@ -17,6 +17,7 @@ import com.lab.eventapp.Dialogs.ClockTimePickerDialog;
 import com.lab.eventapp.Dialogs.DatePickerDialog;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
@@ -293,6 +294,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                             usersEvent.setUser(friend);
                             usersEvent.setEvent(loadedEvent);
                             usersEvent.save();
+
+                            ParsePush push = new ParsePush();
+                            push.setChannel(friend.getUsername());
+                            push.setMessage("You were added to event: " + tbTitle.toString());
+                            push.sendInBackground();
                         }
                     }
                     for (ParseUser friend : oldUsers) {
@@ -353,6 +359,11 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                         usersEvent.setUser(friend);
                         usersEvent.setEvent(newEvent);
                         usersEvent.save();
+
+                        ParsePush push = new ParsePush();
+                        push.setChannel(friend.getUsername());
+                        push.setMessage("You were added to event: " + tbTitle.toString());
+                        push.sendInBackground();
                     }
 
                     ParseUsersEvent usersEvent = new ParseUsersEvent(); //add yourself to the event

@@ -5,17 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.lab.eventapp.R;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import models.User;
 
 /**
  * Created by Adam on 2015-11-28.

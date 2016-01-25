@@ -7,6 +7,9 @@ import com.parse.ParseUser;
 
 import java.util.Date;
 
+/**
+ * Class for storing and managing message.
+ */
 @ParseClassName("Message")
 public class ParseMessage extends ParseObject
 {
@@ -33,5 +36,4 @@ public class ParseMessage extends ParseObject
     }
 
     public String getContent() {return getString("content");}
-    public Date getCreatedDate() {return getDate("createdAt");}
 }
