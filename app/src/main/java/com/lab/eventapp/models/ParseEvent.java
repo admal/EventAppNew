@@ -139,4 +139,19 @@ public class ParseEvent extends ParseObject
          return query.find();
     }
 
+    public void AddUser(ParseUser user) throws ParseException {
+        ParseUsersEvent usersEvent = new ParseUsersEvent();
+        usersEvent.setUser(user);
+        usersEvent.setEvent(this);
+        usersEvent.save();
+    }
+    public void EditEvent(String title, String description, LocalDateTime startTime, LocalDateTime endTime, String place)
+    {
+        this.setStartDate(startTime);
+        this.setEndDate(endTime);
+        this.setTitle(title);
+        this.setDescription(description);
+        this.setPlace(place);
+    }
+
 }

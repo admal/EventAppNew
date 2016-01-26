@@ -11,6 +11,7 @@ import com.lab.eventapp.ActivityInterfaces.IUserAddable;
 import com.lab.eventapp.Dialogs.ChooseFriendsDialog;
 import com.lab.eventapp.Dialogs.ClockTimePickerDialog;
 import com.lab.eventapp.Dialogs.DatePickerDialog;
+import com.lab.eventapp.Factories.ParseEventFactory;
 import com.lab.eventapp.Services.InternetConnectionService;
 import com.lab.eventapp.Services.ModalService;
 import com.parse.GetCallback;
@@ -229,18 +230,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         return addedUsers;
     }
 
-//    private void showErrorModal(String errorMsg)
-//    {
-//        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getBaseContext());
-//        builder.setMessage(errorMsg);
-//        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                finish();
-//            }
-//        });
-//    }
-
     /**
      * Validate input. Only description can be empty. Start date can not be after end date.
      * Method shows proper error message.
@@ -301,17 +290,8 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
         LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
 
-        loadedEvent.setStartDate(startFinalDate);
-        loadedEvent.setEndDate(endFinalDate);
-        loadedEvent.setTitle(tbTitle.getText().toString());
-        loadedEvent.setDescription(tbDesc.getText().toString());
-        loadedEvent.setPlace(tbPlace.getText().toString());
-//
-//        ParseRelation<ParseUser> relation = loadedEvent.getRelation("users");
-//        for (ParseUser user :
-//                addedUsers) {
-//            relation.add(user);
-//        }
+        loadedEvent.EditEvent(tbTitle.getText().toString(),tbDesc.getText().toString(),startFinalDate,endFinalDate,
+                tbPlace.getText().toString());
 
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
         dlg.setTitle("Please wait.");
@@ -322,18 +302,13 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
             @Override
             public void done(ParseException e) {
                 AppUser user = new AppUser(ParseUser.getCurrentUser());
-
                 try {
                     List<ParseUser> oldUsers = loadedEvent.getUsers();
-
                     //to every user the event is added
                     for (ParseUser friend : addedUsers) {
                         if(!oldUsers.contains(friend))
                         {
-                            ParseUsersEvent usersEvent = new ParseUsersEvent();
-                            usersEvent.setUser(friend);
-                            usersEvent.setEvent(loadedEvent);
-                            usersEvent.save();
+                            loadedEvent.AddUser(friend);
 
                             ParsePush push = new ParsePush();
                             push.setChannel(friend.getUsername());
@@ -341,10 +316,8 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                             push.sendInBackground();
                         }
                     }
-
                     for (ParseUser friend : oldUsers) {
                         if (!addedUsers.contains(friend)) {
-                            Log.d("parseError", friend.getObjectId() + " , " + loadedEvent.getObjectId() );
                             loadedEvent.removeUser(friend);
                         }
                     }
@@ -359,7 +332,6 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         });
     }
 
-
     /**
      * Gets data from the form and creates the event.
      */
@@ -368,13 +340,8 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
         LocalDateTime startFinalDate = startDate.toLocalDateTime(startTime);
         LocalDateTime endFinalDate = endDate.toLocalDateTime(endTime);
 
-        final ParseEvent newEvent = new ParseEvent();
-        newEvent.setStartDate(startFinalDate);
-        newEvent.setEndDate(endFinalDate);
-        newEvent.setTitle(tbTitle.getText().toString());
-        newEvent.setDescription(tbDesc.getText().toString());
-        newEvent.setPlace(tbPlace.getText().toString());
-        newEvent.setOwner(ParseUser.getCurrentUser());
+        final ParseEvent newEvent = ParseEventFactory.Create(tbTitle.getText().toString(), tbDesc.getText().toString(),
+                startFinalDate, endFinalDate, tbPlace.getText().toString());
 
         final ProgressDialog dlg = new ProgressDialog(AddEventActivity.this);
         dlg.setTitle("Please wait.");
@@ -393,21 +360,14 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
                 try {
                     for (ParseUser friend :
                             addedUsers) {
-                        ParseUsersEvent usersEvent = new ParseUsersEvent();
-                        usersEvent.setUser(friend);
-                        usersEvent.setEvent(newEvent);
-                        usersEvent.save();
+                        newEvent.AddUser(friend);
 
                         ParsePush push = new ParsePush();
                         push.setChannel(friend.getUsername());
                         push.setMessage("You were added to event: " + tbTitle.getText().toString());
                         push.sendInBackground();
                     }
-
-                    ParseUsersEvent usersEvent = new ParseUsersEvent(); //add yourself to the event
-                    usersEvent.setUser(ParseUser.getCurrentUser());
-                    usersEvent.setEvent(newEvent);
-                    usersEvent.save();
+                    newEvent.AddUser(ParseUser.getCurrentUser());
                     dlg.dismiss();
                     finish();
 
