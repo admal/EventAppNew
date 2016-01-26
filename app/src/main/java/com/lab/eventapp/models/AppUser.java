@@ -1,9 +1,7 @@
-package models;
+package com.lab.eventapp.models;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;

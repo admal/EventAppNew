@@ -1,12 +1,6 @@
 package com.lab.eventapp;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,18 +19,8 @@ import com.lab.eventapp.MainEventFragments.MyEventsFragment;
 
 import com.lab.eventapp.Services.InternetConnectionService;
 import com.lab.eventapp.Services.ModalService;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParsePush;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import java.util.List;
-
-import models.ParseEvent;
-import models.ParseMessage;
 
 /**
  * Main activity of the application. Fragments show all upcoming events and created by user events.

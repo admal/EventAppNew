@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.lab.eventapp.Services.InternetConnectionService;
 import com.lab.eventapp.Services.ModalService;
 import com.lab.eventapp.R;
 import com.lab.eventapp.UsersEventDetailsActivity;
@@ -23,7 +22,7 @@ import org.joda.time.LocalDateTime;
 
 import java.util.List;
 
-import models.ParseEvent;
+import com.lab.eventapp.models.ParseEvent;
 
 /**
  * Created by Adam on 2015-11-24.

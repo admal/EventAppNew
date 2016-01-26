@@ -1,12 +1,9 @@
 package com.lab.eventapp;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,10 +27,10 @@ import org.joda.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import Validator.StringValidator;
-import models.AppUser;
-import models.ParseEvent;
-import models.ParseUsersEvent;
+import com.lab.eventapp.Validator.StringValidator;
+import com.lab.eventapp.models.AppUser;
+import com.lab.eventapp.models.ParseEvent;
+import com.lab.eventapp.models.ParseUsersEvent;
 
 public class AddEventActivity extends AppCompatActivity implements IUserAddable
 {

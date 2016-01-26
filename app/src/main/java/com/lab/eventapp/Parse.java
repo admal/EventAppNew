@@ -2,9 +2,9 @@ package com.lab.eventapp;
 
 import com.parse.ParseObject;
 
-import models.ParseEvent;
-import models.ParseMessage;
-import models.ParseUsersEvent;
+import com.lab.eventapp.models.ParseEvent;
+import com.lab.eventapp.models.ParseMessage;
+import com.lab.eventapp.models.ParseUsersEvent;
 
 
 public class Parse extends android.app.Application {

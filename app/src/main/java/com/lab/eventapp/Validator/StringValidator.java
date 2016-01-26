@@ -1,4 +1,4 @@
-package Validator;
+package com.lab.eventapp.Validator;
 
 /**
  * Created by Adam on 2016-01-25.

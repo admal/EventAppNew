@@ -21,8 +21,7 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
-import models.ParseEvent;
-import models.ParseUsersEvent;
+import com.lab.eventapp.models.ParseEvent;
 
 /**
  * Created by Adam on 2015-11-24.

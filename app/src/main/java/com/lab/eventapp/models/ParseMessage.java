@@ -1,11 +1,9 @@
-package models;
+package com.lab.eventapp.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-
-import java.util.Date;
 
 /**
  * Class for storing and managing message.

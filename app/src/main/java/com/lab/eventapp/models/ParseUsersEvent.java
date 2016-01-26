@@ -1,4 +1,4 @@
-package models;
+package com.lab.eventapp.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseException;

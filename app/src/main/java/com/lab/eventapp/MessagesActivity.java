@@ -1,13 +1,7 @@
 package com.lab.eventapp;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lab.eventapp.Services.InternetConnectionService;
@@ -29,16 +22,15 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import models.ParseEvent;
-import models.ParseMessage;
-import models.ParseUsersEvent;
+import com.lab.eventapp.models.ParseEvent;
+import com.lab.eventapp.models.ParseMessage;
+import com.lab.eventapp.models.ParseUsersEvent;
 
 /**
  * Activity showing and managing chat for given event

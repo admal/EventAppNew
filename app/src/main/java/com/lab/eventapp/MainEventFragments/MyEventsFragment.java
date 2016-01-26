@@ -18,8 +18,8 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.AppUser;
-import models.ParseEvent;
+import com.lab.eventapp.models.AppUser;
+import com.lab.eventapp.models.ParseEvent;
 
 
 /**

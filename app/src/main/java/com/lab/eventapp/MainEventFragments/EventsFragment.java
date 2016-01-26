@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lab.eventapp.ListAdapters.UsersEventsListAdapter;
 import com.lab.eventapp.R;
@@ -19,8 +18,8 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
-import models.AppUser;
-import models.ParseEvent;
+import com.lab.eventapp.models.AppUser;
+import com.lab.eventapp.models.ParseEvent;
 
 
 /**
