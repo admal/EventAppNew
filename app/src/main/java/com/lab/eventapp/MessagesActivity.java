@@ -49,7 +49,7 @@ public class MessagesActivity extends AppCompatActivity {
     final ArrayList<String> messages = new ArrayList<String>();
 
     /**
-     * In onCreate program boostrap the view and download previous messages from database
+     * In onCreate program bootstrap the view and download previous messages from database
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,71 +98,77 @@ public class MessagesActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final String content = input.getText().toString();
-                if(content.indexOf(":") < 0)
+                InternetConnectionService service2 = new InternetConnectionService(MessagesActivity.this);
+                if(!service2.isInternetConnection())
                 {
-                    if(!content.isEmpty() && content.trim().length() > 0)
+                    ModalService.ShowNoConnetionError(MessagesActivity.this);
+                    return;
+                } else {
+                    final String content = input.getText().toString();
+                    if(content.indexOf(":") < 0)
                     {
-                        final ParseMessage message = new ParseMessage();
-                        message.setSender(currUser);
+                        if(!content.isEmpty() && content.trim().length() > 0)
+                        {
+                            final ParseMessage message = new ParseMessage();
+                            message.setSender(currUser);
 
-                        ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
-                        q.getInBackground(eventId, new GetCallback<ParseEvent>() {
-                            @Override
-                            public void done(ParseEvent object, ParseException e) {
-                                if (e == null) {
-                                    try {
-                                        ParseObject user = object.getOwner();
-
-                                        message.setEvent(object);
-                                        message.setContent(content);
-                                        message.saveInBackground();
-
-                                        Log.d("parse", "Event title: " + object.getTitle());
-                                        Log.d("parse", "owner: " + user.getString("username"));
-                                    } catch (ParseException e1) {
-                                        Log.d("parse", e.getMessage());
-                                    }
-                                } else
-                                    Log.d("Event", "Error: " + e.getMessage());
-                            }
-                        });
-
-                        adapter.add("You: " + content);
-
-                        input.setText("");
-                        scrollMyListViewToBottom(adapter);
-
-                        ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
-                        query.whereEqualTo("event", event[0]);
-                        query.findInBackground(new FindCallback<ParseUsersEvent>() {
-                            public void done(List<ParseUsersEvent> usersevent, ParseException e) {
-                                if (e == null) {
-                                    for (ParseUsersEvent usrevent : usersevent) {
+                            ParseQuery<ParseEvent> q = ParseQuery.getQuery("Event");
+                            q.getInBackground(eventId, new GetCallback<ParseEvent>() {
+                                @Override
+                                public void done(ParseEvent object, ParseException e) {
+                                    if (e == null) {
                                         try {
-                                            if(usrevent.getUser().getUsername() != currUser.getUsername())
-                                            {
-                                                ParsePush push = new ParsePush();
-                                                push.setChannel(usrevent.getUser().getUsername());
-                                                push.setMessage(currUser.getUsername() + " send: " + content);
-                                                push.sendInBackground();
-                                            }
+                                            ParseObject user = object.getOwner();
+
+                                            message.setEvent(object);
+                                            message.setContent(content);
+                                            message.saveInBackground();
+
+                                            Log.d("parse", "Event title: " + object.getTitle());
+                                            Log.d("parse", "owner: " + user.getString("username"));
                                         } catch (ParseException e1) {
-                                            e1.printStackTrace();
+                                            Log.d("parse", e.getMessage());
                                         }
-                                    }
-                                } else {
-                                    Log.d("Messages on refresh", "Error: " + e.getMessage());
+                                    } else
+                                        Log.d("Event", "Error: " + e.getMessage());
                                 }
-                            }
-                        });
-                    } else {
-                        Toast.makeText(MessagesActivity.this, "Right something in message and rember to not use only blankspaces", Toast.LENGTH_LONG).show();
+                            });
+
+                            adapter.add("You: " + content);
+
+                            input.setText("");
+                            scrollMyListViewToBottom(adapter);
+
+                            ParseQuery<ParseUsersEvent> query = ParseQuery.getQuery("UsersEvent");
+                            query.whereEqualTo("event", event[0]);
+                            query.findInBackground(new FindCallback<ParseUsersEvent>() {
+                                public void done(List<ParseUsersEvent> usersevent, ParseException e) {
+                                    if (e == null) {
+                                        for (ParseUsersEvent usrevent : usersevent) {
+                                            try {
+                                                if(usrevent.getUser().getUsername() != currUser.getUsername())
+                                                {
+                                                    ParsePush push = new ParsePush();
+                                                    push.setChannel(usrevent.getUser().getUsername());
+                                                    push.setMessage(currUser.getUsername() + " send: " + content);
+                                                    push.sendInBackground();
+                                                }
+                                            } catch (ParseException e1) {
+                                                e1.printStackTrace();
+                                            }
+                                        }
+                                    } else {
+                                        Log.d("Messages on refresh", "Error: " + e.getMessage());
+                                    }
+                                }
+                            });
+                        } else {
+                            Toast.makeText(MessagesActivity.this, "Right something in message and rember to not use only blankspaces", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-                else {
-                    Toast.makeText(MessagesActivity.this, "Please don't use ':' character in message", Toast.LENGTH_LONG).show();
+                    else {
+                        Toast.makeText(MessagesActivity.this, "Please don't use ':' character in message", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -194,6 +200,13 @@ public class MessagesActivity extends AppCompatActivity {
         final ArrayAdapter<String> adapter = adapt;
         final ParseUser currUser = usr;
         final Date[] lastUpdated = {null};
+
+        InternetConnectionService service = new InternetConnectionService(MessagesActivity.this);
+        if(!service.isInternetConnection())
+        {
+            ModalService.ShowNoConnetionError(MessagesActivity.this);
+            return;
+        }
 
         if(messages.size()-1 > -1)
         {

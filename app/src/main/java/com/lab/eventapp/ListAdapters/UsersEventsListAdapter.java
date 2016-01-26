@@ -88,7 +88,7 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
 
                         final ProgressDialog dlg = new ProgressDialog(getContext());
                         dlg.setTitle("Please wait.");
-                        dlg.setMessage("Removing event.  Please wait.");
+                        dlg.setMessage("Removing event. Please wait...");
                         dlg.setCancelable(false);
                         dlg.show();
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -105,13 +105,14 @@ public class UsersEventsListAdapter extends ArrayAdapter<ParseEvent>
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                             dlg.dismiss();
-                                            ModalService.ShowErrorModal("Unknown error occured!", context);
+                                            ModalService.ShowErrorModal("Could not leave event! Check internet connection and restart application.", context);
                                         }
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
                                         //No button clicked
                                         dialog.dismiss();
+                                        dlg.dismiss();
                                         break;
                                 }
                             }

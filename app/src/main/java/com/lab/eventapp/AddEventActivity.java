@@ -340,7 +340,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
 
                             ParsePush push = new ParsePush();
                             push.setChannel(friend.getUsername());
-                            push.setMessage("You were added to event: " + tbTitle.toString());
+                            push.setMessage("You were added to event: " + tbTitle.getText().toString());
                             push.sendInBackground();
                         }
                     }
@@ -403,7 +403,7 @@ public class AddEventActivity extends AppCompatActivity implements IUserAddable
 
                         ParsePush push = new ParsePush();
                         push.setChannel(friend.getUsername());
-                        push.setMessage("You were added to event: " + tbTitle.toString());
+                        push.setMessage("You were added to event: " + tbTitle.getText().toString());
                         push.sendInBackground();
                     }
 

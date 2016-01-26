@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        ParseUser currUser = ParseUser.getCurrentUser();
+        ParsePush.subscribeInBackground(currUser.getUsername());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -93,16 +96,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                InternetConnectionService service = new InternetConnectionService();
-//                boolean isConnected = service.isInternetConnection(MainActivity.this);
-//                // Check if there is internet connection: If there isn't show pop up dialog and close application
-//                if (!isConnected) {
-//                    ModalService.ShowNoConnetionError(MainActivity.this);
-//
-//                } else {
                     Intent intent = new Intent(getBaseContext(), AddEventActivity.class);
                     startActivity(intent);
-                //}
             }
         });
     }
@@ -122,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.action_logout)
         {
+            InternetConnectionService service = new InternetConnectionService(MainActivity.this);
+            if(!service.isInternetConnection())
+            {
+                ModalService.ShowNoConnetionError(MainActivity.this);
+                return super.onOptionsItemSelected(item);
+            }
+
+            ParseUser currUser = ParseUser.getCurrentUser();
+            ParsePush.unsubscribeInBackground(currUser.getUsername());
             ParseUser.logOut();
             Intent intent = new Intent(getBaseContext(), LoginActivity.class);
             finish();
